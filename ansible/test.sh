@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -eu
+
 # Get Template UUID
 template_name="Debian Stretch 9.0"
 echo "-> xe template-list name-label=\"${template_name}\" --minimal"

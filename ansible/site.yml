@@ -1,0 +1,5 @@
+---
+- name: Provisioning VMs
+  hosts: local
+  roles:
+    - create_vm
