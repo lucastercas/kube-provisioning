@@ -69,3 +69,7 @@ while [[ ${starttime} == ${boot_time} ]];
   do sleep 15; 
   start_time=`xe vm-param-get param-name=start-time uuid={{ vmuuid.stdout }}`; 
 done
+
+# Insert XenTools CD
+
+# 
