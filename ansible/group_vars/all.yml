@@ -1,3 +1,6 @@
 ---
 ansible_connection: local
 ansible_python_interpreter: /usr/bin/python3
+
+sr_name: "Local Storage"
+template_name: "Debian Stretch 9.0"

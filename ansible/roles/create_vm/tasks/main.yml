@@ -1,3 +1,8 @@
 ---
-- name: Create VM
-  command: echo "oi"
+- name: Get UUID of Storage Repository
+  command: echo xe sr-list name-label="{{ sr_name }}" --minimal
+  register: sr_uuid
+
+- name: Get UUID of VM Template
+  command: echo xe template-list name-label="{{ template_name }}" --minimal
+  register: template_uuid
