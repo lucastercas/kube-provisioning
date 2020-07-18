@@ -1,0 +1,5 @@
+---
+- name: Provisioning VMs
+  hosts: xen_servers
+  roles:
+    - create_vm

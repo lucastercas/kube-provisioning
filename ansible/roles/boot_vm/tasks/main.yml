@@ -1,0 +1,12 @@
+---
+- name: Boot VM
+  command: xe vm-start uuid="{{ vm_uuid.stdout }}"
+
+- name: Get Boot Time
+  command: xe vm-param-get param-name=start-time uuid="{{ vm_uuid.stdout }}"
+  register: boot_time
+
+- name: Watch for the first reboot
+  shell: export starttime="{{ boot_time.stdout }}"; while [[ ${starttime} == "{{ boot_time.stdout }}" ]]; do sleep 15; starttime=`xe vm-param-get param-name=start-time uuid="{{ vm_uuid.stdout }}"`; done
+  async: 1800
+  poll: 15
