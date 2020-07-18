@@ -24,23 +24,43 @@
 - name: Set Network Device
   command: xe vif-create network-uuid="{{ network_uuid.stdout }}" mac=random device=0 vm-uuid="{{ vm_uuid.stdout }}"
 
+# - name: Add ISO to CD-ROM Drive
+#   command: xe vm-cd-add uuid="{{ vm_uuid.stdout }}" cd-name="{{ iso_name }}" device=1
+
+- name: Set Boot Params
+  command: xe vm-param-set HVM-boot-policy="BIOS order" uuid="{{ vm_uuid.stdout }}"
+
 - name: Set Install Repo
-  command: xe vm-param-set uuid="{{ vm_uuid.stdout }}" other-config:install-repository="http://deb.debian.org/debian/"
+  command: xe vm-param-set uuid="{{ vm_uuid.stdout }}" other-config:install-repository="http://deb.debian.org/debian/" other-config:install-methods=http,ftp
 
-- name: Add ISO to CD-ROM Drive
-  command: xe vm-cd-add uuid="{{ vm_uuid.stdout }}" cd-name="{{ iso_name }}" device=1
+- name: Set Preseed Boot Options
+  command: xe vm-param-set uuid="{{ vm_uuid.stdout }}" PV-args='--- quiet  console=hvc0 auto=true url=https://www.debian.org/releases/stable/example-preseed.txt interface=eth0 netcfg/get_nameservers=192.168.1.1 netcfg/get_gateway=192.168.1.1 netcfg/get_netmask=255.255.255.0 netcfg/get_ipaddress=192.168.1.10 netcfg/get_domain=www.debian.org netcfg/disable_dhcp=true netcfg/get_nameservers=8.8.8 debian-installer/locale=en_US console-setup/layoutcode=us console-setup/ask_detect=false netcfg/get_hostname=vm_01'
 
-# - name: Create CD-ROM Drive for XenTools
-#   command: xe vbd-create type=CD device=xvdd vm-uuid="{{ vm_uuid.stdout }}" mode=ro
+  # netcfg/get_hostname=yourhost 
+  # netcfg/get_domain=yourdomain
+  # xe template-param-set uuid=$VMUUID 
+  # other-config:install-methods=http,ftp 
+  # other-config:install-repository=http://ftp.us.debian.org/debian 
+  # PV-args="-- quiet console=hvc0 auto=true 
+  # debian-installer/locale=en_US 
+  # console-setup/layoutcode=us 
+  # console-setup/ask_detect=false 
+  # interface=eth0 
+  # netcfg/disable_dhcp=true 
+  # netcfg/get_ipaddress=192.168.1.2 
+  # netcfg/get_netmask=255.255.255.0 
+  # netcfg/get_gateway=192.168.1.1 
+  # netcfg/get_nameservers=192.168.1.1 
+  # preseed/url=http://preseed.spontacts.local/preseed/backend02.spontacts.dev.cfg"
 
-# - name: Insert XenTools CD
-#   command: xe vm-cd-insert cd-name="guest-tools.iso" vm="{{ vm_uuid.stdout }}"
-
-# - name: Set Boot Params
-#   command: xe vm-param-set HVM-boot-policy="BIOS order" uuid="{{ vm_uuid.stdout }}"
+- name: Create CD-ROM Drive for XenTools
+  command: xe vbd-create type=CD device=xvdd vm-uuid="{{ vm_uuid.stdout }}" mode=ro
 
 - name: Start VM
   command: xe vm-start uuid="{{ vm_uuid.stdout }}"
+
+# - name: Insert XenTools CD
+#   command: xe vm-cd-insert cd-name="guest-tools.iso" vm="{{ vm_uuid.stdout }}"
 
 # - name: Add host to Inventory
 #   add_host:
