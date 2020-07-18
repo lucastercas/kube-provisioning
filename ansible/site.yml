@@ -9,7 +9,7 @@
         password: Mateus@2020
         validate_certs: no
         name: etcd_01
-        state: present
+        state: poweredon
         template: "Test Debian Stretch 9.0"
         disks:
           - size_gb: 30
@@ -19,7 +19,6 @@
           num_cpus: 2
         networks:
           - name: "Pool-wide network associated with eth0"
-        wait_for_ip_address: yes
         cdrom:
           type: iso
           iso_name: guest-tools.iso
@@ -33,7 +32,7 @@
         password: Mateus@2020
         validate_certs: no
         name: control_01
-        state: present
+        state: poweredon
         template: "Test Debian Stretch 9.0"
         disks:
           - size_gb: 30
@@ -43,7 +42,6 @@
           num_cpus: 2
         networks:
           - name: "Pool-wide network associated with eth0"
-        wait_for_ip_address: yes
         cdrom:
           type: iso
           iso_name: guest-tools.iso
