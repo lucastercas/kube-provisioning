@@ -1,3 +1,0 @@
----
-install_repository: "http://deb.debian.org/debian/"
-boot_args: '--- quiet console=hvc0 auto=true url="{{ url }}" hostname="{{ hostname }}" domain="{{ domain_name }}" interface="{{ interface | default("eth0") }}" netcfg/get_ipaddress="{{ ip_addr }}" netcfg/get_netmask="{{ netmask | default("255.255.255.0") }}" netcfg/get_gateway="{{ gateway }}" netcfg/get_nameservers="{{ dns_servers }}" netcfg/disable_dhcp="{{ disable_dhcp | default("true") }}" environment="{{ runtime_environment | default("production") }}"'

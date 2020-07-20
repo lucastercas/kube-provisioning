@@ -1,9 +1,0 @@
----
-- name: Set Boot Variables
-  include_vars: file=group_vars/debian.yml
-
-- name: Set Install Repo
-  command: xe vm-param-set uuid="{{ vm_uuid.stdout }}" other-config:install-repository="{{ install_repository }}"
-
-- name: Set Preseed Boot Options
-  command: xe vm-param-set uuid="{{ vm_uuid.stdout }}" PV-args="{{ boot_args }}"

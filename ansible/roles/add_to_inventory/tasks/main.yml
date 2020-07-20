@@ -1,5 +1,0 @@
----
-- name: Add host to Inventory
-  add_host:
-    name="{{ ip_addr }}"
-    groups="deployed_vms"

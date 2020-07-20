@@ -1,9 +1,0 @@
----
-- name: Mount xentools CD
-  command: mount /dev/xvdd /mnt
-
-- name: Run the xentools installer
-  command: /mnt/Linux/install.sh -n
-
-- name: Unmount the xentools CD
-  command: umount /mnt
