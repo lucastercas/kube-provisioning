@@ -1,0 +1,5 @@
+---
+- name: Configure Nodes
+  apt:
+    name: vim
+    state: present

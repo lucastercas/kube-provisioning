@@ -1,0 +1,7 @@
+---
+- name: Configure Nodes
+  hosts: etcd, control
+  become: True
+  become_user: monitoring
+  roles:
+    - mateus.configure_node

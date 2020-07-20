@@ -1,0 +1,30 @@
+---
+- name: Provition ETCDs
+  xenserver_guest:
+    hostname: 10.0.3.81
+    username: root
+    password: Mateus@2020
+    validate_certs: no
+    name: "{{ item }}"
+    state: poweredon
+    template: "Test k8s 1.0 - Debian 9"
+    disks:
+      - size_gb: "20"
+        sr: "Local storage"
+    hardware:
+      memory_mb: 2048
+      num_cpus: 2
+    networks:
+      - name: "Network 0"
+        type: dhcp
+    wait_for_ip_address: yes
+  loop:
+    - control_01
+    - control_02
+  register: CONTROls
+
+- name: Add to Inventory
+  add_host:
+    name: "{{ item.instance.networks[0].ip }}"
+    groups: control
+  with_items: "{{ CONTROls.results }}"
