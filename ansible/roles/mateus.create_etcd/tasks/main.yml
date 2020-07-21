@@ -7,7 +7,7 @@
     validate_certs: no
     name: "etcd_{{ item }}"
     state: poweredon
-    template: "{{ xen_template }}"
+    template_uuid: "{{ xen_template }}"
     disks:
       - size_gb: "{{ etcd_disk_size }}"
         sr: "Local storage"

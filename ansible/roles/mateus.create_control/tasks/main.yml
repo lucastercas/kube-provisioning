@@ -5,9 +5,9 @@
     username: "{{ xen_username }}"
     password: "{{ xen_password }}"
     validate_certs: no
-    name: "{{ item }}"
+    name: "control_{{ item }}"
     state: poweredon
-    template: "{{ xen_template }}"
+    template_uuid: "{{ xen_template }}"
     disks:
       - size_gb: "{{ control_disk_size }}"
         sr: "Local storage"

@@ -4,7 +4,7 @@ xen_username: root
 xen_password: Mateus@2020
 
 xen_network_name: "Network 0"
-xen_template: "Test k8s 1.0 - Debian 9"
+xen_template: "Test k8s 1.2 - Debian 9"
 
 control_disk_size: "30"
 control_memory: "2048"

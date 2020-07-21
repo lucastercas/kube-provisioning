@@ -1,6 +1,6 @@
 ---
 - name: Configure Nodes
-  hosts: etcd_nodes
+  hosts: etcd_nodes, control_nodes
   # roles:
   #   - geerlingguy.docker
   #   - geerlingguy.kubernetes
@@ -16,30 +16,47 @@
         - curl
         - apt-transport-https
         - gnupg2
+        - firewalld
+
     - name: Add keys
       apt_key:
         url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
         state: present
+
     - name: Add apt repo
       apt_repository:
         repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
         state: present
+
     - name: Install K8s packages
       apt:
         name: "{{ item }}"
         state: present
+        update_cache: yes
       loop:
         - kubeadm
         - kubelet
         - kubectl
-    #
-    # - name: Start Services
-    #   service:
-    #     name: "{{ item }}"
-    #     state: started
-    #   loop:
-    #     - docker
-    #     - kubelet
-    #     - firewalld
-    #
-    # - name: Setup firewall rules
+        - docker-engine
+
+    - name: Remove swapfile from /etc/fstab
+      mount:
+        name: "{{ item }}"
+        fstype: swap
+        state: absent
+      with_items:
+        - swap
+        - none
+
+    - name: Disable swap
+      command: swapoff -a
+      when: ansible_swaptotalmb > 0
+
+    - name: Start Services
+      service:
+        name: "{{ item }}"
+        state: started
+      loop:
+        - docker
+        - kubelet
+        - firewalld

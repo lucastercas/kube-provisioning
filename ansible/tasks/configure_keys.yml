@@ -1,17 +1,6 @@
 ---
-- name: Create SSH Keys
-  hosts: localhost
-  become: false
-  tasks:
-    - name: Generate SSH keypair
-      vars:
-      connection: local
-      openssh_keypair:
-        path: /home/lucastercas/.ssh/test_key
-      register: ssh_key
-
 - name: Configure SSH Keys
-  hosts: etcd_nodes
+  hosts: etcd_nodes, control_nodes
   vars:
     ansible_connection: ssh
     ansible_user: root
@@ -21,7 +10,7 @@
       authorized_key:
         user: monitoring
         state: present
-        key: "{{ lookup('file', '~/.ssh/test_key.pub') }}"
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
     #
     # - name: Disable root password login
     #   replace:
