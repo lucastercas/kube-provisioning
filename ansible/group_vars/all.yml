@@ -1,5 +1,11 @@
 ---
-num_etcd: 2
-num_control: 2
+num_etcd: 1
+etcd_cpu: 2
+etcd_memory: 2
 
+num_control: 1
+control_cpu: 2
+control_memory: 2
+
+# Test k8s 1.2 - Debian 9.0
 xen_template: "714840a6-50d0-b24b-737b-2da363a412ae"

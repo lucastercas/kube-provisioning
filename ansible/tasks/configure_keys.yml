@@ -1,4 +1,15 @@
 ---
+- name: Create SSH Keys
+  hosts: localhost
+  become: false
+  tasks:
+    - name: Generate SSH keypair
+      vars:
+      connection: local
+      openssh_keypair:
+        path: /home/lucastercas/.ssh/test_key
+      register: ssh_key
+
 - name: Configure SSH Keys
   hosts: etcd_nodes, control_nodes
   vars:

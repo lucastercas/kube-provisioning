@@ -1,10 +1,19 @@
 ---
 - name: Configure Nodes
   hosts: etcd_nodes, control_nodes
-  # roles:
-  #   - geerlingguy.docker
-  #   - geerlingguy.kubernetes
   tasks:
+    - name: Remove swapfile from /etc/fstab
+      mount:
+        name: "{{ item }}"
+        fstype: swap
+        state: absent
+      with_items:
+        - swap
+        - none
+
+    - name: Disable swap
+      command: swapoff -a
+
     - name: Install Packages
       apt:
         name: "{{ item }}"
@@ -38,19 +47,6 @@
         - kubelet
         - kubectl
         - docker-engine
-
-    - name: Remove swapfile from /etc/fstab
-      mount:
-        name: "{{ item }}"
-        fstype: swap
-        state: absent
-      with_items:
-        - swap
-        - none
-
-    - name: Disable swap
-      command: swapoff -a
-      when: ansible_swaptotalmb > 0
 
     - name: Start Services
       service:
