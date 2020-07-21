@@ -1,3 +1,4 @@
 ---
-- include: create_vms.yml
-- include: configure_nodes.yml
+- include_tasks:
+    - create_vms.yml
+    - configure_nodes.yml
