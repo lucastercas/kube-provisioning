@@ -6,8 +6,8 @@ xen_password: Mateus@2020
 xen_network_name: "Network 0"
 xen_template: "Test k8s 1.0 - Debian 9"
 
-etcd_disk_size: "30"
-etcd_memory: "2048"
-etcd_cpu: "2"
+control_disk_size: "30"
+control_memory: "2048"
+control_cpu: "2"
 
-num_etcd: 2
+num_control: 2

@@ -1,30 +1,30 @@
 ---
-- name: Provition ETCDs
+- name: Provition Control Planes
   xenserver_guest:
-    hostname: 10.0.3.81
-    username: root
-    password: Mateus@2020
+    hostname: "{{ xen_server_ip }}"
+    username: "{{ xen_username }}"
+    password: "{{ xen_password }}"
     validate_certs: no
     name: "{{ item }}"
     state: poweredon
-    template: "Test k8s 1.0 - Debian 9"
+    template: "{{ xen_template }}"
     disks:
-      - size_gb: "20"
+      - size_gb: "{{ control_disk_size }}"
         sr: "Local storage"
     hardware:
-      memory_mb: 2048
-      num_cpus: 2
+      memory_mb: "{{ control_memory }}"
+      num_cpus: "{{ control_cpu }}"
     networks:
-      - name: "Network 0"
+      - name: "{{ xen_network_name }}"
         type: dhcp
     wait_for_ip_address: yes
   loop:
     - control_01
     - control_02
-  register: CONTROls
+  register: control_vms
 
 - name: Add to Inventory
   add_host:
     name: "{{ item.instance.networks[0].ip }}"
-    groups: control
-  with_items: "{{ CONTROls.results }}"
+    groups: control_nodes
+  with_items: "{{ control_vms.results }}"
