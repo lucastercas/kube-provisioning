@@ -1,5 +1,21 @@
 ---
-- name: Configure Nodes
+- name: Disable swap
+  command: swapoff -a
+
+- name: Install Packages
   apt:
-    name: vim
+    name: "{{ item }}"
     state: present
+  loop:
+    - docker
+    - kubeadm
+    - kubectl
+
+- name: Start Services
+  service:
+    name: "{{ item }}"
+    state: started
+  loop:
+    - docker
+    - kubelet
+    - firewalld
