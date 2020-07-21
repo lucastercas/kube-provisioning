@@ -1,4 +1,5 @@
 ---
-- import_playbook: tasks/create_vms.yml
-- import_playbook: tasks/configure_keys.yml
-- import_playbook: tasks/configure_nodes.yml
+- import_playbook: playbooks/create_vms.yml
+- import_playbook: playbooks/configure_keys.yml
+- import_playbook: playbooks/configure_nodes.yml
+- import_playbook: playbooks/configure_cluster.yml

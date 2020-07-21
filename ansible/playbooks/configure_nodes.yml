@@ -32,12 +32,12 @@
         url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
         state: present
 
-    - name: Add apt repo
+    - name: Add K8s APT Repo
       apt_repository:
         repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
         state: present
 
-    - name: Install K8s packages
+    - name: Install K8s Packages
       apt:
         name: "{{ item }}"
         state: present
