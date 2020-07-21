@@ -1,5 +1,5 @@
 ---
-- name: Provition Control Planes
+- name: Provision Control Planes
   xenserver_guest:
     hostname: "{{ xen_server_ip }}"
     username: "{{ xen_username }}"
