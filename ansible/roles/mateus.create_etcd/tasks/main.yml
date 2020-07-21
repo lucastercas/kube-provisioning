@@ -1,11 +1,11 @@
 ---
-- name: Provition etcds
+- name: Provision etcds
   xenserver_guest:
     hostname: "{{ xen_server_ip }}"
     username: "{{ xen_username }}"
     password: "{{ xen_password }}"
     validate_certs: no
-    name: "{{ item }}"
+    name: "etcd_{{ item }}"
     state: poweredon
     template: "{{ xen_template }}"
     disks:
@@ -18,10 +18,7 @@
       - name: "{{ xen_network_name }}"
         type: dhcp
     wait_for_ip_address: yes
-  loop: "{{ query('sequence', start=0, end=num_etcd)}}"
-  # loop:
-  #   - etcd_01
-  #   - etcd_02
+  with_sequence: start=1 end="{{num_etcd }}"
   register: etcd_vms
 
 - name: Add to Inventory

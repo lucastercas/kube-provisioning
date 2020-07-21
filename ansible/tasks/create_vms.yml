@@ -1,0 +1,6 @@
+---
+- name: Create VMs
+  hosts: xen_servers
+  roles:
+    - mateus.create_etcd
+    # - mateus.create_control

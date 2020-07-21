@@ -18,9 +18,7 @@
       - name: "{{ xen_network_name }}"
         type: dhcp
     wait_for_ip_address: yes
-  loop:
-    - control_01
-    - control_02
+  with_sequence: start=1 end="{{ num_control }}"
   register: control_vms
 
 - name: Add to Inventory

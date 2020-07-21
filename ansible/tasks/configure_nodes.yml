@@ -1,0 +1,45 @@
+---
+- name: Configure Nodes
+  hosts: etcd_nodes
+  # roles:
+  #   - geerlingguy.docker
+  #   - geerlingguy.kubernetes
+  tasks:
+    - name: Install Packages
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      loop:
+        - vim
+        - bash
+        - curl
+        - apt-transport-https
+        - gnupg2
+    - name: Add keys
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+    - name: Add apt repo
+      apt_repository:
+        repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+    - name: Install K8s packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - kubeadm
+        - kubelet
+        - kubectl
+    #
+    # - name: Start Services
+    #   service:
+    #     name: "{{ item }}"
+    #     state: started
+    #   loop:
+    #     - docker
+    #     - kubelet
+    #     - firewalld
+    #
+    # - name: Setup firewall rules
