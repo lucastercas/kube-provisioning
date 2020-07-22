@@ -1,5 +1,5 @@
 ---
-- name: Install Dependencies Packages
+- name: Install Dependency Packages
   package:
     name: "{{ item }}"
     state: present
@@ -51,7 +51,17 @@
   loop:
     - kubeadm
     - kubelet
-    - kubectl # To-Do: This package is only needed on master nodes
+    - kubectl
     - docker-ce
     - docker-ce-cli
     - containerd.io
+
+- name: Start services
+  service:
+    name: "{{ item }}"
+    state: restarted
+  loop:
+    - docker
+    - kubelet
+    - firewalld
+    - sshd

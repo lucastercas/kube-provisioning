@@ -1,5 +1,6 @@
 ---
 - import_playbook: provision_nodes.yml
+- import_playbook: configure_access.yml
 - import_playbook: configure_nodes.yml
 # - import_playbook: playbooks/configure_packages.yml
 # - import_playbook: playbooks/configure_nodes.yml
