@@ -1,1 +1,3 @@
 ---
+- name: geerlingguy.firewall
+  version: 2.5.0

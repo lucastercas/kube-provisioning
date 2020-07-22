@@ -1,0 +1,40 @@
+---
+- name: Provision Cluster Nodes
+  hosts: xen_servers
+  tasks:
+    - name: Create ETCD Nodes
+      block:
+        - name: Create Nodes
+          vars:
+            group_name: etcds
+          include_role:
+            name: lucastercas.xen_provision
+        - name: Get Nodes IPs
+          set_fact: etcd_vms="{{ vms_ip }}"
+        - name: Add Nodes IPs to Inventory
+          add_host:
+            name: "{{ item.instance.networks[0].ip }}"
+            groups: etcd_nodes
+          with_items: "{{ etcd_vms.results }}"
+
+    # - name: Create Control Plane Nodes
+    #   vars:
+    #     group_name: controlplane
+    #     num_vms: 0
+    #   include_role:
+    #     name: lucastercas.xen_provision
+
+    - name: Create Worker Nodes
+      block:
+        - name: Create Nodes
+          vars:
+            group_name: worker
+          include_role:
+            name: lucastercas.xen_provision
+        - name: Get Nodes IPs
+          set_fact: worker_vms="{{ vms_ip }}"
+        - name: Add Nodes IPs to Inventory
+          add_host:
+            name: "{{ item.instance.networks[0].ip }}"
+            groups: worker_nodes
+          with_items: "{{ worker_vms.results }}"

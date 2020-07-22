@@ -10,6 +10,7 @@
     - name: Initialize cluster
       command: kubeadm init --apiserver-advertise-address "{{ ip_addr }}"
       register: kubeadm_output
+      ignore_errors: yes
 
     - name: Store logs and token
       become: false

@@ -1,0 +1,6 @@
+---
+- name: Add worker node
+  hosts: worker_nodes
+  tasks:
+    - name: Add node
+      command: kubeadm join 10.0.3.19:6443 --token 1hpziz.hhoi8zs6q7o45td9 --discovery-token-ca-cert-hash sha256:9cf7366ff3d3c526399fa32cd1906b1bc11b145b8e0550105ecec4806da16af0 
