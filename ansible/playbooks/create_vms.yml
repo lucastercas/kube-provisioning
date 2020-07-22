@@ -1,6 +1,77 @@
 ---
 - name: Create VMs
   hosts: xen_servers
-  roles:
-    - mateus.create_etcd
-    - mateus.create_control
+  vars:
+    xenserver_host: 10.0.3.81
+    xenserver_username: root
+    xenserver_password: Mateus@2020
+    template_uuid: "714840a6-50d0-b24b-737b-2da363a412ae"
+    num_etcd: 1
+    num_workers: 1
+    network_name: "Network 0"
+  tasks:
+    - name: Setup etcd nodes
+      block:
+        - name: Create etcd nodes
+          vars:
+            disk_size: "30"
+            memory: "4096"
+            cpu: 4
+          xenserver_guest:
+            hostname: "{{ xenserver_host }}"
+            username: "{{ xenserver_username }}"
+            password: "{{ xenserver_password }}"
+            validate_certs: no
+            name: "etcd_{{ item }}"
+            state: poweredon
+            template_uuid: "{{ template_uuid }}"
+            disks:
+              - size_gb: "{{ disk_size }}"
+                sr: "Local storage"
+            hardware:
+              memory_mb: "{{ memory }}"
+              num_cpus: "{{ cpu }}"
+            networks:
+              - name: "{{ network_name }}"
+                type: dhcp
+            wait_for_ip_address: yes
+          with_sequence: start=1 end="{{ num_etcd }}"
+          register: etcd_vms
+        - name: Add etcd to inventory
+          add_host:
+            name: "{{ item.instance.networks[0].ip }}"
+            groups: etcd_nodes
+          with_items: "{{ etcd_vms.results }}"
+
+    - name: Setup worker nodes
+      block:
+        - name: Create worker nodes
+          vars:
+            disk_size: "30"
+            memory: "4096"
+            cpu: 4
+          xenserver_guest:
+            hostname: "{{ xenserver_host }}"
+            username: "{{ xenserver_username }}"
+            password: "{{ xenserver_password }}"
+            validate_certs: no
+            name: "control_{{ item }}"
+            state: poweredon
+            template_uuid: "{{ template_uuid }}"
+            disks:
+              - size_gb: "{{ disk_size }}"
+                sr: "Local storage"
+            hardware:
+              memory_mb: "{{ memory }}"
+              num_cpus: "{{ cpu }}"
+            networks:
+              - name: "{{ network_name }}"
+                type: dhcp
+            wait_for_ip_address: yes
+          with_sequence: start=1 end="{{ num_workers }}"
+          register: worker_vms
+        - name: Add workers to inventory
+          add_host:
+            name: "{{ item.instance.networks[0].ip }}"
+            groups: worker_nodes
+          with_items: "{{ worker_vms.results }}"

@@ -1,7 +1,0 @@
----
-galaxy_info:
-  author: lucastercas
-  description: Role to provision Control Plane nodes on Xen Server
-  license: license(GPLv2)
-  galaxy_tabs: xen, kubernetes, control-plane
-dependencies: []

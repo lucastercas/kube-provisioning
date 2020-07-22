@@ -1,7 +1,7 @@
 ---
 num_etcd: 1
 etcd_cpu: 4
-etcd_memory: 3072
+etcd_memory: 4096
 
 num_control: 1
 control_cpu: 4

@@ -1,17 +1,6 @@
 ---
-- name: Create SSH Keys
-  hosts: localhost
-  become: false
-  tasks:
-    - name: Generate SSH keypair
-      vars:
-      connection: local
-      openssh_keypair:
-        path: /home/lucastercas/.ssh/test_key
-      register: ssh_key
-
 - name: Configure SSH Keys
-  hosts: etcd_nodes, control_nodes
+  hosts: k8s_nodes
   vars:
     ansible_connection: ssh
     ansible_user: root
@@ -22,43 +11,9 @@
         user: monitoring
         state: present
         key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
-    #
-    # - name: Disable root password login
-    #   replace:
-    #     regexp: '^PermitRootLogin yes'
-    #     replace: '^PermitRootLogin prohibit-password'
-    #
-    # - block:
-    #     - name: Allow sudo for monitoring
-    #       vars:
-    #         ansible_connection: ssh
-    #         ansible_user: root
-    #         ansible_ssh_pass: 123123
-    #       copy:
-    #         content: monitoring ALL=(ALL) ALL
-    #         dest: /etc/sudoers.d/monitoring
-    #         mode: 0600
-    # authorized_key:
-    #   user: root
-    #   state: present
-    #   key: "{{ lookup('file', '/home/lucastercas/.ssh/id_rsa.pub') }}"
-    # - name: Ensures monitoring ssh directory exists
-    #   file:
-    #     path: /home/monitoring/.ssh
-    #     state: directory
-    # - name: Copy monitoring keys
-    #   copy:
-    #     src: /home/lucastercas/.ssh/
-    #     dest: /home/monitoring/.ssh/
-    #     owner: monitoring
-    #     group: monitoring
-    # - name: Ensures root ssh directory exists
-    #   file:
-    #     path: /root/.ssh
-    #     state: directory
-    # - name: Copy root keys
-    #   copy:
-    #     src: /home/lucastercas/.ssh/
-    #     dest: /root/.ssh
-    #     owner: root
-    #     group: root
+
+    - name: Disable root password login
+      replace:
+        path: /etc/ssh/sshd_config
+        regexp: "^PermitRootLogin yes"
+        replace: "PermitRootLogin prohibit-password"

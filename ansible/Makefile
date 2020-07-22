@@ -1,4 +1,4 @@
-.PHONY: run
+.PHONY: ansible run_playbook create_role
 
 ansible:
 	ansible $(cmd)
