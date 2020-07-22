@@ -1,0 +1,13 @@
+---
+xen_host: 10.0.3.81
+xen_username: root
+xen_password: Mateus@2020
+group_name: vms
+xen_vm_template_uuid: 714840a6-50d0-b24b-737b-2da363a412ae
+xen_vm_disk_size: "30"
+xen_sr_name: "Local storage"
+xen_vm_memory: 2048
+xen_vm_cpu: 4
+xen_network_name: "Network 0"
+num_vms: 1
+wait_for_ip: yes

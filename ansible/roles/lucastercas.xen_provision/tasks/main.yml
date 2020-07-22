@@ -1,0 +1,22 @@
+---
+- name: Provision Xen Server VM
+  register: vms_ip
+  with_sequence: start=1 end="{{ num_vms }}"
+  xenserver_guest:
+    hostname: "{{ xen_host }}"
+    username: "{{ xen_username }}"
+    password: "{{ xen_password }}"
+    validate_certs: no
+    name: "{{ group_name}}_{{ item }}"
+    state: poweredon
+    template_uuid: "{{ xen_vm_template_uuid }}"
+    disks:
+      - size_gb: "{{ xen_vm_disk_size }}"
+        sr: "{{ xen_sr_name }}"
+    hardware:
+      memory_mb: "{{ xen_vm_memory }}"
+      num_cpus: "{{ xen_vm_cpu }}"
+    networks:
+      - name: "{{ xen_network_name }}"
+        type: dhcp
+    wait_for_ip_address: "{{ wait_for_ip }}"
