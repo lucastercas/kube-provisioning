@@ -1,0 +1,57 @@
+---
+- name: Install Dependencies Packages
+  package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - curl
+    - apt-transport-https
+    - gnupg2
+    - firewalld
+    - ca-certificates
+    - gnupg-agent
+    - software-properties-common
+
+- name: Uninstall Old Versions of Docker
+  package:
+    name: "{{ item }}"
+    state: absent
+  loop:
+    - docker
+    - docker-engine
+    - docker.io
+    - containerd
+    - runc
+
+- name: Add Docker GPG Key
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+
+- name: Add Docker APT Repo
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/debian buster stable
+    state: present
+
+- name: Add Kubernetes GPG APT keys
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+
+- name: Add Kubernetes APT Repo
+  apt_repository:
+    repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+    state: present
+
+- name: Install Required Packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  loop:
+    - kubeadm
+    - kubelet
+    - kubectl # To-Do: This package is only needed on master nodes
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
