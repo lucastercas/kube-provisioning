@@ -1,0 +1,70 @@
+---
+- name: Configure Nodes
+  hosts: k8s_nodes
+  roles:
+    - geerlingguy.firewall
+  tasks:
+    - name: Install dependencies packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - curl
+        - apt-transport-https
+        - gnupg2
+        - firewalld
+        - ca-certificates
+        - gnupg-agent
+        - software-properties-common
+
+    - name: Uninstall old versions of docker
+      package:
+        name:
+          - docker
+          - docker-engine
+          - docker.io
+          - containerd
+          - runc
+        state: absent
+
+    - name: Add docker gpg keys
+      apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+        state: present
+
+    - name: Add docker apt repo
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/debian buster stable
+        state: present
+
+    - name: Add kubernetes gpg apt keys
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+
+    - name: Add k8s apt repo
+      apt_repository:
+        repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+
+    - name: Install k8s packages
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      loop:
+        - kubeadm
+        - kubelet
+        - kubectl
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+
+    - name: Start services
+      service:
+        name: "{{ item }}"
+        state: started
+      loop:
+        - docker
+        - kubelet
+        - firewalld

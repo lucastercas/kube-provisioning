@@ -8,3 +8,6 @@ run_playbook:
 
 create_role:
 	ansible-galaxy init $(role) --init-path=/etc/ansible/roles
+
+install_role:
+	ansible-galaxy install 
