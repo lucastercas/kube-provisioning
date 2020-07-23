@@ -16,8 +16,9 @@ frontend kubernetes
   {% for host in groups['loadbalancers'] %}
   bind {{ hostvars[host]['ansible_host'] }}:6443
   {% endfor %}
-  option tcplog
   mode tcp
+  option tcplog
+  option forwardfor
   default_backend kubernetes-master-nodes
 
 backend kubernetes-master-nodes

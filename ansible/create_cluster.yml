@@ -1,0 +1,4 @@
+- name: Configure and Create Cluster
+  hosts: kubernetes_nodes
+  roles:
+    - lucastercas.create_cluster

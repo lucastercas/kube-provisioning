@@ -56,6 +56,20 @@
     - docker-ce
     - docker-ce-cli
     - containerd.io
+  when: kubernetes_role == "controlplane"
+
+- name: Install Required Packages for Masters
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  loop:
+    - kubeadm
+    - kubelet
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+  when: kubernetes_role == "worker"
 
 - name: Start services
   service:
