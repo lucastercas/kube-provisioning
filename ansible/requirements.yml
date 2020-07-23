@@ -1,3 +1,4 @@
 ---
-- name: geerlingguy.firewall
-  version: 2.5.0
+roles:
+  - name: geerlingguy.firewall
+    version: 2.5.0
