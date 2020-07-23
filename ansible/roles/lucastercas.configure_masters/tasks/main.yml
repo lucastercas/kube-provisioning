@@ -1,21 +1,31 @@
 ---
 - name: Install Kubeadm Packages
   command: kubeadm config images pull
+  when: kubernetes_role == "controlplane"
 
 - name: Initialize Cluster
   command: kubeadm init --control-plane-endpoint "{{ hostvars[groups['loadbalancers'][0]]['ansible_host'] }}" --upload-certs
+  when: kubernetes_role == "controlplane"
   register: kubeadm_output
 
 - name: Save Logs
   become: false
-  local_action: copy content"{{ kubeadm_output.stdout }}" dest="./logs.json"
+  local_action: copy content="{{ kubeadm_output.stdout }}" dest="./tokens_file"
 
 - name: Get KubeConfig File
   fetch:
-    src: /etc/kubernetes/admin.conf
-    dest: ./cluster-kubeconfig.conf
+    src: /etc/kubernetes/
+    dest: ./cluster-kubeconfig/
+  when: kubernetes_role == "controlplane"
 
-- name: Install Network Plugin
-  command: kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
-  environment:
-    KUBECONFIG: "etc/kubernetes/admin.conf"
+# - name: Install Network Plugin
+#   command: kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')" --kubeconfig=/etc/kubernetes/admin.conf
+
+- name: Get Join Command for Workers
+  command: kubeadm token create --print-join-command
+  when: kubernetes_role == "controlplane"
+  register: kubernetes_join_command
+
+- name: Add Worker to Cluster
+  command: "{{ kubernetes_join_command.stdout }}"
+  when: kubernetes_role == "worker"

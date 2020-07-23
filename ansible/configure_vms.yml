@@ -1,6 +1,6 @@
 ---
 - name: Configure VMs Packages, Services and Firewall
-  hosts: k8s_nodes
+  hosts: kubernetes_nodes
   roles:
     - lucastercas.configure_vms
     - geerlingguy.firewall

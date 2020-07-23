@@ -1,4 +1,4 @@
-- name: Configure Master Nodes
-  hosts: control_nodes
+- name: Configure Kubernetes Nodes
+  hosts: kubernetes_nodes
   roles:
     - lucastercas.configure_masters

@@ -6,7 +6,7 @@
   loop:
     - haproxy
 
-- name: Test template
+- name: Template of haproxy Configuration File
   template:
     src: templates/haproxy.cfg.j2
     dest: /etc/haproxy/haproxy.cfg

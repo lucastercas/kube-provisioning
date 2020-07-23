@@ -1,6 +1,6 @@
 ---
 - name: Configure SSH Keys
-  hosts: k8s_nodes
+  hosts: kubernetes_nodes
   vars:
     ansible_connection: ssh
     ansible_user: root
