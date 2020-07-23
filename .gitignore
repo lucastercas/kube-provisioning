@@ -2,3 +2,4 @@ ansible/roles/*
 !ansible/roles/lucastercas.*
 **/.terraform
 **/*.tfstate
+**/*.tfstate.backup

@@ -1,0 +1,7 @@
+---
+- name: Install Required Packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - haproxy

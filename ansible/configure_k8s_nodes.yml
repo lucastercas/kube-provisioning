@@ -5,7 +5,7 @@
     - lucastercas.configure_packages
     - geerlingguy.firewall
   tasks:
-    - name: Remove swapfile from /etc/fstab
+    - name: Remove Swapfile from /etc/fstab
       mount:
         name: "{{ item }}"
         fstype: swap
@@ -13,6 +13,5 @@
       with_items:
         - swap
         - none
-
-    - name: Disable swap
+    - name: Disable Swap
       command: swapoff -a

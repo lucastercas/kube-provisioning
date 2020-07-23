@@ -3,6 +3,7 @@
   package:
     name: "{{ item }}"
     state: present
+    update_cache: yes
   loop:
     - curl
     - apt-transport-https
@@ -43,7 +44,7 @@
     repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
     state: present
 
-- name: Install Required Packages
+- name: Install Required Packages for Masters
   apt:
     name: "{{ item }}"
     state: present
@@ -52,6 +53,18 @@
     - kubeadm
     - kubelet
     - kubectl
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+
+- name: Install Required Packages for Workers
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  loop:
+    - kubeadm
+    - kubelet
     - docker-ce
     - docker-ce-cli
     - containerd.io
