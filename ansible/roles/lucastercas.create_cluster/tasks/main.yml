@@ -7,16 +7,17 @@
   command: kubeadm init --control-plane-endpoint "{{ hostvars[groups['loadbalancers'][0]]['ansible_host'] }}:6443" --upload-certs
   when: kubernetes_role == "controlplane"
   register: kubeadm_output
+  ignore_errors: yes
 
 - name: Save Logs
   become: false
   local_action: copy content="{{ kubeadm_output.stdout }}" dest="./tokens_file"
-  when: kubeadm_output is defined
+  when: kubeadm_output is defined and kubernetes_role == "controlplane"
 
 - name: Get Kubeconfig File
   fetch:
-    src: /etc/kubernetes/
-    dest: ./cluster-kubeconfig/
+    src: /etc/kubernetes/admin.conf
+    dest: ./cluster-kubeconfig
   when: kubernetes_role == "controlplane"
 
 - name: Install Network Plugin

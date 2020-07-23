@@ -14,7 +14,7 @@ defaults
 
 frontend kubernetes
   {% for host in groups['loadbalancers'] %}
-  bind {{ hostvars[host]['ansible_host'] }}:6443
+    bind {{ hostvars[host]['ansible_host'] }}:6443
   {% endfor %}
   mode tcp
   option tcplog
