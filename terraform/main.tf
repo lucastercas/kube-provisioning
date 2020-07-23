@@ -13,7 +13,7 @@ resource "digitalocean_ssh_key" "default" {
 resource "digitalocean_droplet" "loadbalancer" {
   count    = 1
   name     = "loadbalancer-${count.index}"
-  image    = "debian-10.3-x64"
+  image    = "ubuntu-20-04-x64"
   size     = "s-1vcpu-1gb"
   region   = "lon1"
   ssh_keys = ["${digitalocean_ssh_key.default.fingerprint}"]
@@ -22,8 +22,8 @@ resource "digitalocean_droplet" "loadbalancer" {
 resource "digitalocean_droplet" "master" {
   count    = 3
   name     = "master-${count.index}"
-  image    = "debian-10.3-x64"
-  size     = "s-2vcpu-3gb"
+  image    = "ubuntu-20-04-x64"
+  size     = "s-2vcpu-2gb"
   region   = "lon1"
   ssh_keys = ["${digitalocean_ssh_key.default.fingerprint}"]
 }
@@ -31,8 +31,8 @@ resource "digitalocean_droplet" "master" {
 resource "digitalocean_droplet" "worker" {
   count    = 0
   name     = "worker-${count.index}"
-  image    = "debian-10.3-x64"
-  size     = "s-2vcpu-3gb"
+  image    = "ubuntu-20-04-x64"
+  size     = "s-2vcpu-2gb"
   region   = "lon1"
   ssh_keys = ["${digitalocean_ssh_key.default.fingerprint}"]
 }
