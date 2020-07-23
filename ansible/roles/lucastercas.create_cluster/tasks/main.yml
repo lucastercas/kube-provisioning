@@ -11,7 +11,7 @@
 
 - name: Save Logs
   become: false
-  local_action: copy content="{{ kubeadm_output.stdout }}" dest="./tokens_file"
+  local_action: copy content="{{ kubeadm_output.stdout }}" dest="./kubeadm.logs"
   when: kubeadm_output is defined and kubernetes_role == "controlplane"
 
 - name: Get Kubeconfig File

@@ -4,3 +4,6 @@ ansible/roles/*
 **/*.tfstate
 **/*.tfstate.backup
 **/*.terraform.tfstate.backup
+
+**/cluster-kubeconfig/*
+**/kubeadm.logs
