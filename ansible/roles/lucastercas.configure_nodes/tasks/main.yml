@@ -78,3 +78,15 @@
     - kubelet
     - firewalld
     - sshd
+
+- name: Remove Swapfile from /etc/fstab
+  mount:
+    name: "{{ item }}"
+    fstype: swap
+    state: absent
+  with_items:
+    - swap
+    - none
+
+- name: Disable Swap
+  command: swapoff -a

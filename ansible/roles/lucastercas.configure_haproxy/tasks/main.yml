@@ -5,3 +5,13 @@
     state: present
   loop:
     - haproxy
+
+- name: Test template
+  template:
+    src: templates/haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+
+- name: Restart haproxy
+  service:
+    name: haproxy
+    state: restarted
