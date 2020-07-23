@@ -27,7 +27,6 @@ resource "digitalocean_droplet" "master" {
   ssh_keys = ["${digitalocean_ssh_key.default.fingerprint}"]
 }
 
-
 resource "digitalocean_droplet" "worker" {
   count    = 0
   name     = "worker-${count.index}"
