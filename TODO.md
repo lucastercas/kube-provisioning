@@ -6,5 +6,5 @@
 3. Add privates files to .gitignore
    * kubeconfig file
    * logs files with command to join cluster
-4. Remove kubectl from workers
+4. Remove kubectl from installed packages on workers
 5. 

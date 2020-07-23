@@ -1,6 +1,0 @@
----
-- name: Configure Cluster Nodes
-  hosts: k8s_nodes
-  roles:
-    - lucastercas.configure_nodes
-    - geerlingguy.firewall

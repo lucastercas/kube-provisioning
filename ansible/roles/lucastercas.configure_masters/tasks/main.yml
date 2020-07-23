@@ -1,0 +1,21 @@
+---
+- name: Install Kubeadm Packages
+  command: kubeadm config images pull
+
+- name: Initialize Cluster
+  command: kubeadm init --control-plane-endpoint "{{ hostvars[groups['loadbalancers'][0]]['ansible_host'] }}" --upload-certs
+  register: kubeadm_output
+
+- name: Save Logs
+  become: false
+  local_action: copy content"{{ kubeadm_output.stdout }}" dest="./logs.json"
+
+- name: Get KubeConfig File
+  fetch:
+    src: /etc/kubernetes/admin.conf
+    dest: ./cluster-kubeconfig.conf
+
+- name: Install Network Plugin
+  command: kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+  environment:
+    KUBECONFIG: "etc/kubernetes/admin.conf"

@@ -1,0 +1,4 @@
+- name: Configure Master Nodes
+  hosts: control_nodes
+  roles:
+    - lucastercas.configure_masters

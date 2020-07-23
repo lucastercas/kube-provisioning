@@ -29,7 +29,7 @@ resource "digitalocean_droplet" "master" {
 }
 
 resource "digitalocean_droplet" "worker" {
-  count    = 0
+  count    = 1
   name     = "worker-${count.index}"
   image    = "ubuntu-20-04-x64"
   size     = "s-2vcpu-2gb"

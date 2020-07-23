@@ -57,18 +57,6 @@
     - docker-ce-cli
     - containerd.io
 
-- name: Install Required Packages for Workers
-  apt:
-    name: "{{ item }}"
-    state: present
-    update_cache: yes
-  loop:
-    - kubeadm
-    - kubelet
-    - docker-ce
-    - docker-ce-cli
-    - containerd.io
-
 - name: Start services
   service:
     name: "{{ item }}"

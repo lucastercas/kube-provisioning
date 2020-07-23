@@ -1,8 +1,8 @@
 ---
 # - import_playbook: provision_nodes.yml
 # - import_playbook: configure_access.yml
-- import_playbook: configure_k8s_nodes.yml
+- import_playbook: configure_vms.yml
 - import_playbook: configure_loadbalancers.yml
-# - import_playbook: playbooks/configure_nodes.yml
+- import_playbook: configure_nodes.yml
 # - import_playbook: playbooks/configure_cluster.yml
 # - import_playbook: playbooks/add_workers.yml
