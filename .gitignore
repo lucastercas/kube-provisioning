@@ -3,3 +3,4 @@ ansible/roles/*
 **/.terraform
 **/*.tfstate
 **/*.tfstate.backup
+**/*.terraform.tfstate.backup
