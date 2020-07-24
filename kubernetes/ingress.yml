@@ -8,12 +8,14 @@ spec:
     - host: dashboard.test
       http:
         paths:
-          - backend:
+          - path: /
+            backend:
               serviceName: kubernetes-dashboard
               servicePort: 443
     - host: app.test
       http:
         paths:
-          - backend:
+          - path: /
+            backend:
               serviceName: spring-app
               servicePort: 8080
