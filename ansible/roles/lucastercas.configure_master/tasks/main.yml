@@ -1,0 +1,83 @@
+---
+# - name: Install Kubeadm Packages
+#   command: kubeadm config images pull
+
+- name: Check if kubernetes has been initialized
+  stat:
+    path: /etc/kubernetes/admin.conf
+  register: kubernetes_init_stat
+
+- name: Init master with control plane endpoint
+  command: >
+    kubeadm init
+    --control-plane-endpoint "{{ hostvars[groups['loadbalancers'][0]]['ansible_host'] }}:6443" 
+    --upload-certs
+    --ignore-preflight-errors={{ kubernetes_ignore_preflight_erros }}
+    --v=5
+  register: kubeadmin_init
+  when:
+    - master_control_plane | bool
+    - not master_advertise_ip
+    - not kubernetes_init_stat.stat.exists
+
+- name: Init master with advertise ip address
+  command: >
+    kubeadm init
+    --apiserver-advertise-address={{ kubernetes_apiserver_advertise_address | default(ansible_default_ipv4.address, true) }}
+    --ignore-preflight-errors={{ kubernetes_ignore_preflight_erros }}
+  register: kubeadmin_init
+  when:
+    - master_advertise_ip | bool
+    - not master_control_plane
+    - not kubernetes_init_stat.stat.exists
+
+# - name: Print init output to screen
+#   debug:
+#     var: kubeadmin_init.stdout
+#     verbosity: 2
+#   when: not kubernetes_init_stat.stat.exists
+
+- name: Save init output to log file
+  become: false
+  local_action: copy content="{{ kubeadmin_init.stdout }}" dest="./kubeadm.log"
+  ignore_errors: yes
+
+- name: Get kubeconfig file
+  fetch:
+    src: /etc/kubernetes/admin.conf
+    dest: ./cluster-kubeconfig
+  when: kubernetes_role == "controlplane"
+
+- name: Ensure .kube directory exists
+  file:
+    path: ~/.kube
+    state: directory
+
+- name: Symlink kubeconfig to ~/.kube/config
+  file:
+    src: /etc/kubernetes/admin.conf
+    dest: ~/.kube/config
+    state: link
+
+- name: Get kubernetes version for weave installation.
+  shell: kubectl version | base64 | tr -d '\n'
+  changed_when: false
+  register: kubectl_version
+
+- name: Install weave network plugin
+  command: "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version={{ kubectl_version.stdout_lines[0] }}"
+  register: weave_result
+  changed_when: "'created' in weave_result.stdout"
+
+- name: Check if dashboard ui service exists
+  shell: kubectl get services --namespace kube-system | grep -q kubernetes-dashboard
+  changed_when: false
+  failed_when: false
+  register: kubernetes_dashboard_service
+  when: kubernetes_enable_dashboard | bool
+
+- name: Enable dashboard ui
+  command: kubectl create -f "{{ kubernetes_dashboard_manifest }}"
+  when:
+    - kubernetes_enable_dashboard | bool
+    - kubernetes_dashboard_service is failed

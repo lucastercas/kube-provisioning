@@ -1,2 +1,2 @@
 ---
-kubernetes_role: controlplane
+kubernetes_role: ["controlplane", "master"]

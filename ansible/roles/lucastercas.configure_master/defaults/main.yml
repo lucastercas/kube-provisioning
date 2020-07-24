@@ -1,0 +1,10 @@
+---
+
+master_control_plane: true
+master_advertise_ip: false 
+
+kubernetes_ignore_preflight_erros: 'all'
+
+# Dashboard
+kubernetes_enable_dashboard: true
+kubernetes_dashboard_manifest: https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml

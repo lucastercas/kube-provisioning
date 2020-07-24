@@ -1,2 +1,2 @@
 ---
-kubernetes_role: worker
+kubernetes_role: ["worker"]
