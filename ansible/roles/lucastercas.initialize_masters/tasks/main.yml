@@ -14,7 +14,7 @@
     --upload-certs
     --ignore-preflight-errors={{ kubernetes_ignore_preflight_erros }}
     --v=5
-  register: kubeadmin_init
+  register: kubeadmin_init_endpoint
   when:
     - master_control_plane | bool
     - not master_advertise_ip
@@ -25,28 +25,31 @@
     kubeadm init
     --apiserver-advertise-address={{ kubernetes_apiserver_advertise_address | default(ansible_default_ipv4.address, true) }}
     --ignore-preflight-errors={{ kubernetes_ignore_preflight_erros }}
-  register: kubeadmin_init
+  register: kubeadmin_init_advertise
   when:
     - master_advertise_ip | bool
     - not master_control_plane
     - not kubernetes_init_stat.stat.exists
 
+- name: Debug output of kubeadm init
+  debug:
+    var: kubeadmin_init_endpoint
 # - name: Print init output to screen
 #   debug:
 #     var: kubeadmin_init.stdout
 #     verbosity: 2
 #   when: not kubernetes_init_stat.stat.exists
 
-- name: Save init output to log file
-  become: false
-  local_action: copy content="{{ kubeadmin_init.stdout }}" dest="./kubeadm.log"
-  ignore_errors: yes
+# - name: Save init output to log file
+#   become: false
+#   local_action: copy content="{{ kubeadmin_init.stdout }}" dest="./kubeadm.log"
+#   ignore_errors: yes
 
 - name: Get kubeconfig file
   fetch:
     src: /etc/kubernetes/admin.conf
     dest: ./cluster-kubeconfig
-  when: kubernetes_role == "controlplane"
+  when: "'controlplane' in kubernetes_roles"
 
 - name: Ensure .kube directory exists
   file:
@@ -73,11 +76,18 @@
   shell: kubectl get services --namespace kube-system | grep -q kubernetes-dashboard
   changed_when: false
   failed_when: false
-  register: kubernetes_dashboard_service
+  register: has_kubernetes_dashboard_service
   when: kubernetes_enable_dashboard | bool
+
+- name: Debug has service
+  debug:
+    var: kubernetes_dashboard_service
+
+- name: Debug if service enabled
+  debug:
+    var: kubernetes_enable_dashboard
 
 - name: Enable dashboard ui
   command: kubectl create -f "{{ kubernetes_dashboard_manifest }}"
   when:
     - kubernetes_enable_dashboard | bool
-    - kubernetes_dashboard_service is failed

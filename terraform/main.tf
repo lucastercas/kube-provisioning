@@ -13,7 +13,7 @@ resource "digitalocean_droplet" "loadbalancer" {
   count    = 1
   name     = "loadbalancer-${count.index}"
   image    = "ubuntu-20-04-x64"
-  size     = "s-1vcpu-1gb"
+  size     = "s-2vcpu-2gb"
   region   = "nyc3"
   ssh_keys = ["${digitalocean_ssh_key.default.fingerprint}"]
 }
@@ -22,16 +22,16 @@ resource "digitalocean_droplet" "master" {
   count    = 1
   name     = "master-${count.index}"
   image    = "ubuntu-20-04-x64"
-  size     = "s-2vcpu-2gb"
+  size     = "s-2vcpu-4gb"
   region   = "nyc3"
   ssh_keys = ["${digitalocean_ssh_key.default.fingerprint}"]
 }
 
 resource "digitalocean_droplet" "worker" {
-  count    = 1
+  count    = 2
   name     = "worker-${count.index}"
   image    = "ubuntu-20-04-x64"
-  size     = "s-2vcpu-2gb"
+  size     = "s-2vcpu-4gb"
   region   = "nyc3"
   ssh_keys = ["${digitalocean_ssh_key.default.fingerprint}"]
 }

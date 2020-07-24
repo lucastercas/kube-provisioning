@@ -1,7 +1,7 @@
 - name: Configure master nodes
   hosts: control_nodes, etcd_nodes
   roles:
-    - lucastercas.configure_master
+    - lucastercas.initialize_masters
 
 - name: Join worker nodes
   hosts: kubernetes_nodes
@@ -9,7 +9,7 @@
     - name: Get join command
       command: kubeadm token create --print-join-command
       changed_when: false
-      when: "'controlplane' in kubernetes_role"
+      when: "'controlplane' in kubernetes_roles"
       register: kubernetes_join_command_result
 
     - name: Set the kubeadm join command globally.
@@ -22,7 +22,7 @@
       with_items: "{{ groups['all'] }}"
 
     - name: Send join command to workers
-      when: "'worker' in kubernetes_role"
+      when: "'worker' in kubernetes_roles"
       command: "{{ kubernetes_join_command }}"
       tags: ["skip_ansible_lint"]
 # - name: Add Workers to Cluster

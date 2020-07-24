@@ -56,7 +56,7 @@
     - docker-ce
     - docker-ce-cli
     - containerd.io
-  when: "'master' in kubernetes_role"
+  when: "'master' in kubernetes_roles"
 
 - name: Install required packages for workers
   apt:
@@ -69,7 +69,7 @@
     - docker-ce
     - docker-ce-cli
     - containerd.io
-  when: "'worker' in kubernetes_role"
+  when: "'worker' in kubernetes_roles"
 
 - name: Start services
   service:

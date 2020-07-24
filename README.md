@@ -12,3 +12,7 @@ a external
 
 The aim is to be able to provision nodes on multiple hosts of Xen Server,
 so the cluster can be truly high availability.
+
+```bash
+$ kubectl get secret $SECRET_NAME -n=kube-system -o json | jq -r '.data["token"]' | base64 -d > user_token.txt
+```
