@@ -44,7 +44,7 @@
     repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
     state: present
 
-- name: Install Required Packages for Masters
+- name: Install required packages for masters
   apt:
     name: "{{ item }}"
     state: present
@@ -56,9 +56,9 @@
     - docker-ce
     - docker-ce-cli
     - containerd.io
-  when: kubernetes_role == "controlplane"
+  when: "'master' in kubernetes_role"
 
-- name: Install Required Packages for Masters
+- name: Install required packages for workers
   apt:
     name: "{{ item }}"
     state: present
@@ -69,7 +69,7 @@
     - docker-ce
     - docker-ce-cli
     - containerd.io
-  when: kubernetes_role == "worker"
+  when: "'worker' in kubernetes_role"
 
 - name: Start services
   service:
