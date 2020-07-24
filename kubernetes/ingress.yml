@@ -1,0 +1,19 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: test-ingress
+spec:
+  rules:
+    - host: dashboard.test
+      http:
+        paths:
+          - backend:
+              serviceName: kubernetes-dashboard
+              servicePort: 443
+    - host: app.test
+      http:
+        paths:
+          - backend:
+              serviceName: spring-app
+              servicePort: 8080
