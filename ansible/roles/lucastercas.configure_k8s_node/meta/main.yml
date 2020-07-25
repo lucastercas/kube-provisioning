@@ -1,2 +1,10 @@
 ---
 dependencies: []
+
+galaxy_info:
+  autor: lucastercas
+  description: Prepare VMs to execute kubernetes
+  company: ""
+  license: ""
+  galaxy_tags:
+    - kubernetes
