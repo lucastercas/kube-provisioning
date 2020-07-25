@@ -10,9 +10,10 @@
 - name: Init master with control plane endpoint
   command: >
     kubeadm init
-    --control-plane-endpoint "{{ hostvars[groups['loadbalancers'][0]]['ansible_host'] }}:6443" 
+    --control-plane-endpoint "{{ hostvars[groups.loadbalancers[0]].ansible_host }}:6443"
     --upload-certs
-    --ignore-preflight-errors={{ kubernetes_ignore_preflight_erros }}
+    --ignore-preflight-errors="{{ kubernetes_ignore_preflight_erros }}"
+    --pod-network-cidr="{{ kubernetes_network.pod_network_cidr }}"
     --v=5
   register: kubeadmin_init_endpoint
   when:
@@ -24,6 +25,7 @@
   command: >
     kubeadm init
     --apiserver-advertise-address={{ kubernetes_apiserver_advertise_address | default(ansible_default_ipv4.address, true) }}
+    --pod-network-cidr="{{ kubernetes_network.pod_network_cidr }}"
     --ignore-preflight-errors={{ kubernetes_ignore_preflight_erros }}
   register: kubeadmin_init_advertise
   when:
@@ -62,15 +64,27 @@
     dest: ~/.kube/config
     state: link
 
-- name: Get kubernetes version for weave installation.
-  shell: kubectl version | base64 | tr -d '\n'
-  changed_when: false
-  register: kubectl_version
+- name: Configure Flannel networking.
+  command: "{{ item }}"
+  with_items:
+    - kubectl apply -f {{ kubernetes_flannel_manifest_file_rbac }}
+    - kubectl apply -f {{ kubernetes_flannel_manifest_file }}
+  register: flannel_result
+  changed_when: "'created' in flannel_result.stdout"
+  when: kubernetes_network.cni == 'flannel'
 
-- name: Install weave network plugin
-  command: "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version={{ kubectl_version.stdout_lines[0] }}"
-  register: weave_result
-  changed_when: "'created' in weave_result.stdout"
+- name: Configure weave cni
+  block:
+    - name: Get kubernetes version for weave installation.
+      shell: kubectl version | base64 | tr -d '\n'
+      changed_when: false
+      register: kubectl_version
+
+    - name: Install weave network plugin
+      command: "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version={{ kubectl_version.stdout_lines[0] }}"
+      register: weave_result
+      changed_when: "'created' in weave_result.stdout"
+  when: kubernetes_network.pod_network_cidr == "weave"
 
 - name: Check if dashboard ui service exists
   shell: kubectl get services --namespace kube-system | grep -q kubernetes-dashboard
