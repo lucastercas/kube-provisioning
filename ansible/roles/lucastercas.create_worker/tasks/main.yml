@@ -1,20 +1,21 @@
 ---
+# Get the join command from the control planes
 - name: Get join command
   command: kubeadm token create --print-join-command
   changed_when: false
   when: "'controlplane' in kubernetes_roles"
   register: kubernetes_join_command_result
 
+# Set the join command as a variable on all hosts
 - name: Set the kubeadm join command globally.
   set_fact:
-    kubernetes_join_command: >
-      {{ kubernetes_join_command_result.stdout }}
+    kubernetes_join_command: "{{ kubernetes_join_command_result.stdout }}"
   when: kubernetes_join_command_result.stdout is defined
   delegate_to: "{{ item }}"
   delegate_facts: true
   with_items: "{{ groups['all'] }}"
 
-- name: Send join command to workers
-  when: "'worker' in kubernetes_roles"
+- name: Execute join command on workers
   command: "{{ kubernetes_join_command }}"
+  when: "'worker' in kubernetes_roles"
   tags: ["skip_ansible_lint"]
