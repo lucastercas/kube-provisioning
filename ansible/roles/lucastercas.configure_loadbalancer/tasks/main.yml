@@ -1,17 +1,20 @@
 ---
 - name: Install Required Packages
-  apt:
+  package:
     name: "{{ item }}"
     state: present
   loop:
     - haproxy
 
-- name: Template of haproxy Configuration File
-  template:
-    src: templates/haproxy.cfg.j2
-    dest: /etc/haproxy/haproxy.cfg
+- name: Configure haproxy loadbalancer
+  block:
+    - name: Template of haproxy Configuration File
+      template:
+        src: templates/haproxy.cfg.j2
+        dest: /etc/haproxy/haproxy.cfg
 
-- name: Restart haproxy
-  service:
-    name: haproxy
-    state: restarted
+    - name: Restart haproxy
+      service:
+        name: haproxy
+        state: restarted
+  when: loadbalancer is "haproxy"
