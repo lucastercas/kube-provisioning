@@ -1,33 +1,33 @@
 ---
-- name: Install Dependency Packages
+- name: Install dependency packages
   package:
     name: "{{ item }}"
     state: present
     update_cache: yes
   loop: "{{ kubernetes_required_packages }}"
 
-- name: Uninstall Old Versions of Docker
+- name: Uninstall old versions of docker
   package:
     name: "{{ item }}"
     state: absent
   loop: "{{ old_docker_packages }}"
 
-- name: Add Docker GPG Key
+- name: Add docker gpg apt key
   apt_key:
     url: "{{ docker_gpg_key }}"
     state: present
 
-- name: Add Docker APT Repo
+- name: Add docker apt repo
   apt_repository:
     repo: "{{ docker_apt_repo }}"
     state: present
 
-- name: Add Kubernetes GPG APT keys
+- name: Add kubernetes gpg apt key
   apt_key:
     url: "{{ kubernetes_apt_key }}"
     state: present
 
-- name: Add Kubernetes APT Repo
+- name: Add kubernetes apt repo
   apt_repository:
     repo: "{{ kubernetes_apt_repo }}"
     state: present
@@ -54,7 +54,7 @@
     state: restarted
   loop: "{{ kubernetes_nodes_services }}"
 
-- name: Remove Swapfile from /etc/fstab
+- name: Remove swapfile from /etc/fstab
   mount:
     name: "{{ item }}"
     fstype: swap
@@ -63,5 +63,5 @@
     - swap
     - none
 
-- name: Disable Swap
+- name: Disable swap
   command: swapoff -a
