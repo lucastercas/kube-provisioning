@@ -1,0 +1,11 @@
+---
+- name: Configure VMs Packages, Services and Firewall
+  hosts: kubernetes_nodes
+  roles:
+    - lucastercas.configure_k8s_node
+    - geerlingguy.firewall
+
+- name: Configure loadbalancer
+  hosts: loadbalancers
+  roles:
+    - lucastercas.configure_loadbalancer

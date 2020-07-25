@@ -1,0 +1,44 @@
+---
+kubernetes_required_packages:
+  - curl
+  - apt-transport-https
+  - gnupg2
+  - firewalld
+  - ca-certificates
+  - gnupg-agent
+  - software-properties-common
+
+old_docker_packages:
+  - docker
+  - docker-engine
+  - docker.io
+  - containerd
+  - runc
+
+kubernetes_packages_master:
+  - kubeadm
+  - kubelet
+  - kubectl
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+
+kubernetes_packages_worker:
+  - kubeadm
+  - kubelet
+  - kubectl
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+
+kubernetes_nodes_services:
+  - docker
+  - kubelet
+  - firewalld
+  - sshd
+
+docker_gpg_key: "https://download.docker.com/linux/debian/gpg"
+docker_apt_repo: "deb [arch=amd64] https://download.docker.com/linux/debian buster stable"
+
+kubernetes_apt_key: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+kubernetes_apt_repo: "deb http://apt.kubernetes.io/ kubernetes-xenial main"

@@ -4,44 +4,32 @@
     name: "{{ item }}"
     state: present
     update_cache: yes
-  loop:
-    - curl
-    - apt-transport-https
-    - gnupg2
-    - firewalld
-    - ca-certificates
-    - gnupg-agent
-    - software-properties-common
+  loop: "{{ kubernetes_required_packages }}"
 
 - name: Uninstall Old Versions of Docker
   package:
     name: "{{ item }}"
     state: absent
-  loop:
-    - docker
-    - docker-engine
-    - docker.io
-    - containerd
-    - runc
+  loop: "{{ old_docker_packages }}"
 
 - name: Add Docker GPG Key
   apt_key:
-    url: https://download.docker.com/linux/debian/gpg
+    url: "{{ docker_gpg_key }}"
     state: present
 
 - name: Add Docker APT Repo
   apt_repository:
-    repo: deb [arch=amd64] https://download.docker.com/linux/debian buster stable
+    repo: "{{ docker_apt_repo }}"
     state: present
 
 - name: Add Kubernetes GPG APT keys
   apt_key:
-    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    url: "{{ kubernetes_apt_key }}"
     state: present
 
 - name: Add Kubernetes APT Repo
   apt_repository:
-    repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+    repo: "{{ kubernetes_apt_repo }}"
     state: present
 
 - name: Install required packages for masters
@@ -49,13 +37,7 @@
     name: "{{ item }}"
     state: present
     update_cache: yes
-  loop:
-    - kubeadm
-    - kubelet
-    - kubectl
-    - docker-ce
-    - docker-ce-cli
-    - containerd.io
+  loop: "{{ kubernetes_packages_master }}"
   when: "'master' in kubernetes_roles"
 
 - name: Install required packages for workers
@@ -63,23 +45,14 @@
     name: "{{ item }}"
     state: present
     update_cache: yes
-  loop:
-    - kubeadm
-    - kubelet
-    - docker-ce
-    - docker-ce-cli
-    - containerd.io
+  loop: "{{ kubernetes_packages_master }}"
   when: "'worker' in kubernetes_roles"
 
 - name: Start services
   service:
     name: "{{ item }}"
     state: restarted
-  loop:
-    - docker
-    - kubelet
-    - firewalld
-    - sshd
+  loop: "{{ kubernetes_nodes_services }}"
 
 - name: Remove Swapfile from /etc/fstab
   mount:

@@ -1,5 +1,0 @@
----
-- name: Configure Load Balancers
-  hosts: loadbalancers
-  roles:
-    - lucastercas.configure_haproxy
