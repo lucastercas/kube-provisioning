@@ -10,7 +10,7 @@ install_role:
 
 # Install requires roles, described in the requirements.txt file
 install_requirements:
-	ansible-galaxy install -r requirements.txt
+	ansible-galaxy install -r requirements.yml
 
 # Run the loadbalancers playbook
 loadbalancers:
