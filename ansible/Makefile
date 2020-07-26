@@ -14,3 +14,15 @@ install_role:
 
 install_requirements:
 	ansible-galaxy install -r requirements.txt
+
+loadbalancers:
+	ansible-playbook -i hosts playbooks/configure_loadbalancers.yml
+
+nodes:
+	ansible-playbook -i hosts playbooks/configure_nodes.yml
+
+masters:
+	ansible-playbook -i hosts playbooks/initializer_masters.yml
+
+workers:
+	ansible-playbook -i hosts playbooks/add_workers.yml

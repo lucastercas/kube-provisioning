@@ -3,8 +3,3 @@
   hosts: control_nodes
   roles:
     - lucastercas.initialize_master
-
-- name: Configure worker nodes
-  hosts: kubernetes_nodes
-  roles:
-    - lucastercas.create_worker

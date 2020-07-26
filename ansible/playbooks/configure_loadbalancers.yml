@@ -1,0 +1,5 @@
+---
+- name: Configure loadbalancers
+  hosts: loadbalancers
+  roles:
+    - lucastercas.configure_loadbalancer

@@ -1,0 +1,6 @@
+---
+- name: Configure kubernetes nodes
+  hosts: kubernetes_nodes
+  roles:
+    - lucastercas.configure_k8s_node
+    - geerlingguy.firewall

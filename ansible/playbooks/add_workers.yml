@@ -1,0 +1,5 @@
+---
+- name: Add worker nodes
+  hosts: kubernetes_nodes
+  roles:
+    - lucastercas.create_worker
