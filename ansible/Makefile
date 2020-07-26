@@ -14,20 +14,20 @@ install_requirements:
 
 # Run the loadbalancers playbook
 loadbalancers:
-	ansible-playbook -i hosts playbooks/configure_loadbalancers.yml
+	ansible-playbook -i hosts.yml playbooks/configure_loadbalancers.yml
 
 # Run the configure_nodes playbook
 nodes:
-	ansible-playbook -i hosts playbooks/configure_nodes.yml
+	ansible-playbook -i hosts.yml playbooks/configure_nodes.yml
 
 # Run the masters playbooks
 masters:
-	ansible-playbook -i hosts playbooks/initializer_masters.yml
+	ansible-playbook -i hosts.yml playbooks/initializer_masters.yml
 
 # Run the workers playbook
 workers:
-	ansible-playbook -i hosts playbooks/add_workers.yml
+	ansible-playbook -i hosts.yml playbooks/add_workers.yml
 
 # Run the main playbook
 run:
-	ansible-playbook -i hosts.yml site.yml
+	ansible-playbook -i hosts.yml.yml site.yml
