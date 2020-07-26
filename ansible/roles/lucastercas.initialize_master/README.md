@@ -15,3 +15,8 @@
 ## To Do
 
 1.
+
+## References
+
+1. https://pwittrock.github.io/docs/admin/kubeadm
+2.
