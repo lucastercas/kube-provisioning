@@ -2,4 +2,4 @@
 # - import_playbook: provision_nodes.yml
 # - import_playbook: configure_access.yml
 - import_playbook: configure_vms.yml
-- import_playbook: create_cluster.yml
+# - import_playbook: create_cluster.yml

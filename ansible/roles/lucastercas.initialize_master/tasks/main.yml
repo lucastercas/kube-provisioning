@@ -12,9 +12,8 @@
     kubeadm init
     --control-plane-endpoint "{{ hostvars[groups.loadbalancers[0]].ansible_host }}:6443"
     --upload-certs
+    --pod-network-cidr=10.244.0.0/16
     --ignore-preflight-errors="{{ kubernetes_ignore_preflight_erros }}"
-    --pod-network-cidr="{{ kubernetes_network.pod_network_cidr }}"
-    --v=5
   register: kubeadmin_init_endpoint
   when:
     - master_control_plane | bool
