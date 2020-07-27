@@ -1,5 +1,5 @@
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: test-ingress
@@ -10,14 +10,25 @@ spec:
     serviceName: default-http-backend
     servicePort: 80
   rules:
-    - host: app.test
+    - host: app.test.com
       http:
         paths:
           - path: /spring
             backend:
-              serviceName: spring-app
+              serviceName: spring-app-ci
               servicePort: 80
           - path: /hello-world
             backend:
-              serviceName: hello-world
+              serviceName: hello-world-ci
+              servicePort: 80
+    - host: local.minikube.com
+      http:
+        paths:
+          - path: /spring
+            backend:
+              serviceName: spring-app-ci
+              servicePort: 80
+          - path: /hello-world
+            backend:
+              serviceName: hello-world-ci
               servicePort: 80

@@ -10,7 +10,7 @@ resource "digitalocean_ssh_key" "default" {
 }
 
 resource "digitalocean_droplet" "loadbalancer" {
-  count    = 1
+  count    = 0
   name     = "loadbalancer-${count.index}"
   image    = "debian-10-x64"
   size     = "s-2vcpu-2gb"
@@ -28,7 +28,7 @@ resource "digitalocean_droplet" "master" {
 }
 
 resource "digitalocean_droplet" "worker" {
-  count    = 1
+  count    = 2
   name     = "worker-${count.index}"
   image    = "debian-10-x64"
   size     = "s-2vcpu-4gb"
