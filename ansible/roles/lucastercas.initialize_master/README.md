@@ -19,7 +19,6 @@
    1. kubectl taint nodes --all node-role.kubernetes.io/master-
 2. kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 3. kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.34.1/deploy/static/provider/baremetal/deploy.yaml
-4.
 
 ## References
 

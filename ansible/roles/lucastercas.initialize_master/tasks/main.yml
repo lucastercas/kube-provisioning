@@ -7,47 +7,39 @@
     path: /etc/kubernetes/admin.conf
   register: kubernetes_init_stat
 
-- name: Init master with control plane endpoint
-  command: >
-    kubeadm init
-    --control-plane-endpoint "{{ hostvars[groups.loadbalancers[0]].ansible_host }}:6443"
-    --upload-certs
-    --pod-network-cidr="{{ kubernetes_network.pod_network_cidr }}"
-    --ignore-preflight-errors="{{ kubernetes_ignore_preflight_erros }}"
-  register: kubeadmin_init_endpoint
-  when:
-    - master_creation_mode == "control_plane"
-    - not kubernetes_init_stat.stat.exists
-
-- name: Debug output of kubeadm init
-  debug:
-    var: kubeadmin_init_endpoint
+- name: Create cluster with control plane endpoint
+  block:
+    - name: Init master
+      command: >
+        kubeadm init
+        --control-plane-endpoint "{{ hostvars[groups.loadbalancers[0]].ansible_host }}:6443"
+        --upload-certs
+        --pod-network-cidr="{{ kubernetes_network.pod_network_cidr }}"
+        --ignore-preflight-errors="{{ kubernetes_ignore_preflight_erros }}"
+      register: kubeadmin_init_endpoint
+      when:
+        - not kubernetes_init_stat.stat.exists
+    - name: Print output
+      debug:
+        var: kubeadmin_init_endpoint
   when: master_creation_mode == "control_plane"
 
-- name: Init master with advertise ip address
-  command: >
-    kubeadm init
-    --apiserver-advertise-address={{ kubernetes_apiserver_advertise_address | default(ansible_default_ipv4.address, true) }}
-    --pod-network-cidr="{{ kubernetes_network.pod_network_cidr }}"
-  register: kubeadmin_init_advertise
-  when:
-    - master_creation_mode == "advertise_ip"
-    - not kubernetes_init_stat.stat.exists
-
-- name: Debug output of kubeadm init
-  debug:
-    var: kubeadmin_init_advertise
+- name: Create cluster with advertise apiserver address
+  block:
+    - name: Init master
+      command: >
+        kubeadm init
+        --apiserver-advertise-address={{ kubernetes_apiserver_advertise_address | default(ansible_default_ipv4.address, true) }}
+        --upload-certs
+        --pod-network-cidr="{{ kubernetes_network.pod_network_cidr }}"
+        --ignore-preflight-errors="{{ kubernetes_ignore_preflight_erros }}"
+      register: kubeadmin_init_advertise
+      when:
+        - not kubernetes_init_stat.stat.exists
+    - name: Print output
+      debug:
+        var: kubeadmin_init_advertise
   when: master_creation_mode == "advertise_ip"
-# - name: Print init output to screen
-#   debug:
-#     var: kubeadmin_init.stdout
-#     verbosity: 2
-#   when: not kubernetes_init_stat.stat.exists
-
-# - name: Save init output to log file
-#   become: false
-#   local_action: copy content="{{ kubeadmin_init.stdout }}" dest="./kubeadm.log"
-#   ignore_errors: yes
 
 - name: Get kubeconfig file
   fetch:
@@ -66,9 +58,9 @@
     dest: ~/.kube/config
     state: link
 
-- name: Taint master
-  command: kubectl taint nodes --all node-role.kubernetes.io/master-
-  when: kubernetes_taint_master == true
+# - name: Taint master
+#   command: kubectl taint nodes --all node-role.kubernetes.io/master-
+#   when: kubernetes_taint_master == true
 
 - name: Configure Flannel networking.
   command: "{{ item }}"
@@ -92,8 +84,8 @@
       changed_when: "'created' in weave_result.stdout"
   when: kubernetes_network.cni == "weave"
 
-- name: Add ingress nginx controller
-  command: kubectl apply -f "{{ kubernetes_ingress_controller }}"
+# - name: Add ingress nginx controller
+#   command: kubectl apply -f "{{ kubernetes_ingress_controller }}"
 
 # - name: Check if dashboard ui service exists
 #   shell: kubectl get services --namespace kube-system | grep -q kubernetes-dashboard

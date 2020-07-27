@@ -30,4 +30,4 @@ workers:
 
 # Run the main playbook
 run:
-	ansible-playbook -i hosts.yml.yml site.yml -v
+	ansible-playbook -i hosts.yml site.yml -v
