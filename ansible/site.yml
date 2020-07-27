@@ -1,5 +1,5 @@
 ---
 - import_playbook: playbooks/configure_nodes.yml
-# - import_playbook: playbooks/configure_loadbalancers.yml
+- import_playbook: playbooks/configure_loadbalancers.yml
 - import_playbook: playbooks/initializer_masters.yml
 - import_playbook: playbooks/add_workers.yml

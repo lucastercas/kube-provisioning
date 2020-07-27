@@ -1,6 +1,6 @@
 ---
-# master_creation_mode: "control_plane"
-master_creation_mode: "advertise_ip"
+master_creation_mode: "control_plane"
+# master_creation_mode: "advertise_ip"
 
 kubernetes_ignore_preflight_erros: "all"
 
