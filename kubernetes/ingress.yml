@@ -10,13 +10,6 @@ spec:
     serviceName: default-http-backend
     servicePort: 80
   rules:
-    - host: dashboard.test
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: kubernetes-dashboard
-              servicePort: 443
     - host: app.test
       http:
         paths:
