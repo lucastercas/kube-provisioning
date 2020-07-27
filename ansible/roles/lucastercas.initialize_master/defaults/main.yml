@@ -15,3 +15,5 @@ kubernetes_flannel_manifest_file: https://raw.githubusercontent.com/coreos/flann
 kubernetes_network:
   cni: "flannel"
   pod_network_cidr: "10.244.0.0/16"
+
+kubernetes_taint_command: "kubectl taint nodes --all node-role.kubernetes.io/master-"

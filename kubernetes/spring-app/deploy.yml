@@ -7,18 +7,20 @@ spec:
   selector:
     matchLabels:
       app: spring-app
+  replicas: 1
   template:
     metadata:
+      name: spring-app
       labels:
         app: spring-app
     spec:
       containers:
         - name: spring-app
-          image: lucastercas/spring
+          imagePullPolicy: Always
+          image: lucastercas/spring:latest
           resources:
             limits:
-              memory: "128Mi"
-              cpu: "500m"
+              memory: "512Mi"
+              cpu: "1000m"
           ports:
-            - name: http
-              containerPort: 8080
+            - containerPort: 8080

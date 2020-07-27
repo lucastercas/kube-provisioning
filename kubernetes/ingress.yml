@@ -20,7 +20,11 @@ spec:
     - host: app.test
       http:
         paths:
-          - path: /
+          - path: /spring
             backend:
               serviceName: spring-app
-              servicePort: 8080
+              servicePort: 80
+          - path: /hello-world
+            backend:
+              serviceName: hello-world
+              servicePort: 80
