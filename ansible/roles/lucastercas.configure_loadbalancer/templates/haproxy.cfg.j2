@@ -12,14 +12,22 @@ defaults
   timeout server 5000ms
   timeout client 5000ms
 
-frontend kubernetes
+frontend front_masters
   bind *:6443
   mode tcp
-  option tcplog
-  option forwardfor
-  default_backend kubernetes-master-nodes
+  default_backend back_masters
 
-backend kubernetes-master-nodes
+frontend front_app
+  bind *:80
+  mode tcp
+  default_backend back_app
+
+frontend front_dashboard
+  bind *:443
+  mode tcp
+  default_backend back_dashboard
+
+backend back_masters
   mode tcp
   balance roundrobin
   option tcp-check
@@ -29,18 +37,20 @@ backend kubernetes-master-nodes
   server {{ server }} {{ hostvars[server].ansible_host }}:6443 check fall 3 rise 2
   {% endfor %}
 
-
-frontend kube-dashboard
-  bind *:443
-  mode tcp
-  default_backend kube-backend
-  timeout client 1m
-
-backend kube-backend
+backend back_app
   mode tcp
   balance roundrobin
   timeout connect 10s
   timeout server 1m
-  {% for server in groups.control_nodes %}
-    server {{ server }} {{ hostvars[server].ansible_host }}:31506 check fall 3 rise 2
+  {% for server in groups.worker_nodes %}
+  server {{ server }} {{ hostvars[server].ansible_host }}:30045 check fall 3 rise 2
+  {% endfor %}
+
+backend back_dashboard
+  mode tcp
+  balance roundrobin
+  timeout connect 10s
+  timeout server 1m
+  {% for server in groups.worker_nodes %}
+  server {{ server }} {{ hostvars[server].ansible_host }}:31506 check fall 3 rise 2
   {% endfor %}
