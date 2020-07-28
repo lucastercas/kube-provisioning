@@ -8,6 +8,7 @@ firewall_allowed_tcp_ports:
   - "2376"
   - "2379"
   - "2380"
+  - "6783"
   - "6443"
   - "9099"
   - "10250"
@@ -17,6 +18,8 @@ firewall_allowed_tcp_ports:
 firewall_allowed_udp_ports:
   - "8472"
   - "8443"
+  - "6783"
+  - "6784"
 
 firewall_additional_rules:
   - "iptables -A INPUT -p tcp --match multiport --dports 30000:32767 -j ACCEPT"

@@ -15,6 +15,7 @@ defaults
 frontend front_masters
   bind *:6443
   mode tcp
+  option tcplog
   default_backend back_masters
 
 frontend front_app
@@ -31,8 +32,6 @@ backend back_masters
   mode tcp
   balance roundrobin
   option tcp-check
-  timeout connect 10s
-  timeout server 1m
   {% for server in groups.control_nodes %}
   server {{ server }} {{ hostvars[server].ansible_host }}:6443 check fall 3 rise 2
   {% endfor %}
@@ -40,8 +39,7 @@ backend back_masters
 backend back_app
   mode tcp
   balance roundrobin
-  timeout connect 10s
-  timeout server 1m
+  option tcp-check
   {% for server in groups.worker_nodes %}
   server {{ server }} {{ hostvars[server].ansible_host }}:30045 check fall 3 rise 2
   {% endfor %}
@@ -49,8 +47,7 @@ backend back_app
 backend back_dashboard
   mode tcp
   balance roundrobin
-  timeout connect 10s
-  timeout server 1m
+  option tcp-check
   {% for server in groups.worker_nodes %}
   server {{ server }} {{ hostvars[server].ansible_host }}:31506 check fall 3 rise 2
   {% endfor %}
