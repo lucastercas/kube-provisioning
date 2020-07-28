@@ -86,22 +86,22 @@
 # - name: Add ingress nginx controller
 #   command: kubectl apply -f "{{ kubernetes_ingress_controller }}"
 
-# - name: Check if dashboard ui service exists
-#   shell: kubectl get services --namespace kube-system | grep -q kubernetes-dashboard
-#   changed_when: false
-#   failed_when: false
-#   register: has_kubernetes_dashboard_service
-#   when: kubernetes_enable_dashboard | bool
+- name: Check if dashboard ui service exists
+  shell: kubectl get services --namespace kube-system | grep -q kubernetes-dashboard
+  changed_when: false
+  failed_when: false
+  register: has_kubernetes_dashboard_service
+  when: kubernetes_enable_dashboard | bool
 
-# - name: Debug has service
-#   debug:
-#     var: kubernetes_dashboard_service
+- name: Debug has service
+  debug:
+    var: kubernetes_dashboard_service
 
-# - name: Debug if service enabled
-#   debug:
-#     var: kubernetes_enable_dashboard
+- name: Debug if service enabled
+  debug:
+    var: kubernetes_enable_dashboard
 
-# - name: Enable dashboard ui
-#   command: kubectl create -f "{{ kubernetes_dashboard_manifest }}"
-#   when:
-#     - kubernetes_enable_dashboard | bool
+- name: Enable dashboard ui
+  command: kubectl create -f "{{ kubernetes_dashboard_manifest }}"
+  when:
+    - kubernetes_enable_dashboard | bool
