@@ -7,7 +7,8 @@ kubernetes_flannel_manifest_file: https://raw.githubusercontent.com/coreos/flann
 kubernetes_ingress_controller: "https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.34.1/deploy/static/provider/baremetal/deploy.yaml"
 
 # Dashboard ui manifest
-kubernetes_dashboard_manifest: https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
+# kubernetes_dashboard_manifest: https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
+kubernetes_dashboard_manifest: kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
 
 # Allow work on master nodes
 kubernetes_taint_command: "kubectl taint nodes --all node-role.kubernetes.io/master-"

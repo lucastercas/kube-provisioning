@@ -41,7 +41,7 @@ backend back_app
   balance roundrobin
   option tcp-check
   {% for server in groups.worker_nodes %}
-  server {{ server }} {{ hostvars[server].ansible_host }}:30045 check fall 3 rise 2
+  server {{ server }} {{ hostvars[server].ansible_host }}:31601 check fall 3 rise 2
   {% endfor %}
 
 backend back_dashboard

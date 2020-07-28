@@ -2,33 +2,52 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: test-ingress
-  # annotations:
-    # nginx.ingress.kubernetes.io/rewrite-target: /
+  name: default-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
 spec:
-  backend:
-    serviceName: default-http-backend
-    servicePort: 80
   rules:
-    - host: app.test.com
+    - host: spring.local.com
       http:
         paths:
-          - path: /spring
+          - path: /
             backend:
-              serviceName: spring-app-ci
+              serviceName: spring-app
               servicePort: 80
-          - path: /hello-world
-            backend:
-              serviceName: hello-world-ci
-              servicePort: 80
-    - host: local.minikube.com
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  namespace: monitoring
+  name: prometheus-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+    - host: prometheus.local.com
       http:
         paths:
-          - path: /spring
+          - path: /
             backend:
-              serviceName: spring-app-ci
+              serviceName: prometheus
               servicePort: 80
-          - path: /hello-world
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  namespace: kubernetes-dashboard
+  name: dashboard-ingress
+  annotations:
+    # nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+    - host: dashboard.local.com
+      http:
+        paths:
+          - path: /
             backend:
-              serviceName: hello-world-ci
+              serviceName: kubernetes-dashboard
               servicePort: 80
+---
+

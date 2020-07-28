@@ -83,6 +83,7 @@
       register: weave_result
       changed_when: "'created' in weave_result.stdout"
   when: kubernetes_network.cni == "weave"
+  
 # - name: Add ingress nginx controller
 #   command: kubectl apply -f "{{ kubernetes_ingress_controller }}"
 
