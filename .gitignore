@@ -8,3 +8,4 @@ ansible/roles/*
 **/cluster-kubeconfig/*
 **/kubeadm.logs
 **/*.lock.info
+**/admin.conf

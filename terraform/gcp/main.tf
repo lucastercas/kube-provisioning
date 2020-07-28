@@ -1,10 +1,9 @@
-
 variable "project_name" {
   value = "kubernetes_test"
 }
 
 variable "region" {
-  
+  value = "us-central1"
 }
 
 resource "random_id" "project_id" {
@@ -21,7 +20,7 @@ resource "google_project" "project" {
 provider "google" {
   credential = file("credentials.json")
   project    = "kubernetes-test-1"
-  region     = "us-central1"
+  region     = var.region
   zone       = "us-central1-c"
 }
 

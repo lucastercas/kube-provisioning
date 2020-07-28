@@ -4,16 +4,7 @@ master_creation_mode: "control_plane"
 
 kubernetes_ignore_preflight_erros: "all"
 
-# Dashboard
 kubernetes_enable_dashboard: true
-kubernetes_dashboard_manifest: https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
-
-# Flannel config files.
-kubernetes_flannel_manifest_file_rbac: https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
-kubernetes_flannel_manifest_file: https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-
-# Ingress nginx manifest
-kubernetes_ingress_controller: "https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.34.1/deploy/static/provider/baremetal/deploy.yaml"
 
 # CNI plugins settings
 kubernetes_network:
@@ -25,4 +16,3 @@ kubernetes_network:
 #   pod_network_cidr: "10.244.0.0/16"
 
 kubernetes_taint_master: false
-kubernetes_taint_command: "kubectl taint nodes --all node-role.kubernetes.io/master-"

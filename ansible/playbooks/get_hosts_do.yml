@@ -1,0 +1,14 @@
+---
+- name: Get digitalocean hosts
+  hosts: 127.0.0.1
+  become: false
+  connection: local
+  tasks:
+    - name: Test
+      shell: terraform output
+      args:
+        chdir: /home/lucastercas/workspace/mateus/kube-provisioning/terraform/digital_ocean
+      register: output
+    - name: Print output
+      debug:
+        var: output.stdout_lines

@@ -44,7 +44,7 @@
 - name: Get kubeconfig file
   fetch:
     src: /etc/kubernetes/admin.conf
-    dest: ./cluster-kubeconfig
+    dest: ../kubeconfigs
   when: "'controlplane' in kubernetes_roles"
 
 - name: Ensure .kube directory exists
@@ -58,11 +58,11 @@
     dest: ~/.kube/config
     state: link
 
-# - name: Taint master
-#   command: kubectl taint nodes --all node-role.kubernetes.io/master-
-#   when: kubernetes_taint_master == true
+- name: Taint master
+  command: kubectl taint nodes --all node-role.kubernetes.io/master-
+  when: kubernetes_taint_master == true
 
-- name: Configure Flannel networking.
+- name: Configure flannel cni plugin
   command: "{{ item }}"
   with_items:
     - kubectl apply -f {{ kubernetes_flannel_manifest_file_rbac }}
@@ -71,7 +71,7 @@
   changed_when: "'created' in flannel_result.stdout"
   when: kubernetes_network.cni == "flannel"
 
-- name: Configure weave cni
+- name: Configure weave cni plugin
   block:
     - name: Get kubernetes version for weave installation.
       shell: kubectl version | base64 | tr -d '\n'
@@ -83,7 +83,6 @@
       register: weave_result
       changed_when: "'created' in weave_result.stdout"
   when: kubernetes_network.cni == "weave"
-
 # - name: Add ingress nginx controller
 #   command: kubectl apply -f "{{ kubernetes_ingress_controller }}"
 
