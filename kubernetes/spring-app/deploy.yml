@@ -3,6 +3,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: spring-app
+  annotations:
+    prometheus.io/scrape: "true"
+  labels:
+    app: spring-app
 spec:
   selector:
     matchLabels:
@@ -17,7 +21,7 @@ spec:
       containers:
         - name: spring-app
           imagePullPolicy: Always
-          image: lucastercas/spring:latest
+          image: nginx
           resources:
             limits:
               memory: "512Mi"

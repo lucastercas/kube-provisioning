@@ -8,7 +8,7 @@ kubernetes_ingress_controller: "https://raw.githubusercontent.com/kubernetes/ing
 
 # Dashboard ui manifest
 # kubernetes_dashboard_manifest: "https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml"
-kubernetes_dashboard_manifest: "https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml"
+kubernetes_dashboard_manifest: "https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.3/aio/deploy/recommended.yaml"
 
 # Allow work on master nodes
 kubernetes_taint_command: "kubectl taint nodes --all node-role.kubernetes.io/master-"

@@ -3,10 +3,13 @@
 global
   user haproxy
   group haproxy
+  chroot /var/lib/haproxy
+  log /dev/log  local0 
 
 defaults
   mode http
   log global
+  option httplog
   retries 2
   timeout connect 3000ms
   timeout server 5000ms
