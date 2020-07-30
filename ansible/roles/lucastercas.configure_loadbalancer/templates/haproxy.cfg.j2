@@ -17,17 +17,6 @@ frontend front_masters
   mode tcp
   option tcplog
   default_backend back_masters
-
-frontend front_app
-  bind *:80
-  mode tcp
-  default_backend back_app
-
-frontend front_dashboard
-  bind *:443
-  mode tcp
-  default_backend back_dashboard
-
 backend back_masters
   mode tcp
   balance roundrobin
@@ -36,18 +25,26 @@ backend back_masters
   server {{ server }} {{ hostvars[server].ansible_host }}:6443 check fall 3 rise 2
   {% endfor %}
 
-backend back_app
+frontend ingress_http_front
+  bind *:80
+  mode tcp
+  default_backend ingress_http_back
+backend ingress_http_back
   mode tcp
   balance roundrobin
   option tcp-check
   {% for server in groups.worker_nodes %}
-  server {{ server }} {{ hostvars[server].ansible_host }}:31601 check fall 3 rise 2
+  server {{ server }} {{ hostvars[server].ansible_host }}:31748 check fall 3 rise 2
   {% endfor %}
 
-backend back_dashboard
+frontend ingress_https_front
+  bind *:443
+  mode tcp
+  default_backend ingress_https_back
+backend ingress_https_back
   mode tcp
   balance roundrobin
   option tcp-check
   {% for server in groups.worker_nodes %}
-  server {{ server }} {{ hostvars[server].ansible_host }}:31506 check fall 3 rise 2
+  server {{ server }} {{ hostvars[server].ansible_host }}:32428 check fall 3 rise 2
   {% endfor %}

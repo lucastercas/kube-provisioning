@@ -1,5 +1,6 @@
 ---
 - name: Configure haproxy loadbalancer
+  when: loadbalancer == "haproxy"
   block:
     - name: Install required packages
       package:
@@ -7,14 +8,11 @@
         state: present
       loop:
         - haproxy
-
     - name: Template of haproxy configuration file
       template:
         src: templates/haproxy.cfg.j2
         dest: /etc/haproxy/haproxy.cfg
-
     - name: Restart haproxy
       service:
         name: haproxy
         state: restarted
-  when: loadbalancer == "haproxy"

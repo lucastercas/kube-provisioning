@@ -1,11 +1,12 @@
 ---
-# - name: Install Kubeadm Packages
-#   command: kubeadm config images pull
-
 - name: Check if kubernetes has been initialized
   stat:
     path: /etc/kubernetes/admin.conf
   register: kubernetes_init_stat
+
+- name: Install Kubeadm Packages
+  command: kubeadm config images pull
+  when: not kubernetes_init_stat.stat.exists
 
 - name: Create cluster with control plane endpoint
   block:
@@ -16,13 +17,14 @@
         --upload-certs
         --pod-network-cidr="{{ kubernetes_network.pod_network_cidr }}"
         --ignore-preflight-errors="{{ kubernetes_ignore_preflight_erros }}"
-      register: kubeadmin_init_endpoint
+      register: kubeadm_output
       when:
-        - not kubernetes_init_stat.stat.exists
-    - name: Print output
+    - name: Print kubeadm output
       debug:
-        var: kubeadmin_init_endpoint
-  when: master_creation_mode == "control_plane"
+        var: kubeadm_output
+  when:
+    - master_creation_mode == "control_plane"
+    - not kubernetes_init_stat.stat.exists
 
 - name: Create cluster with advertise apiserver address
   block:
@@ -33,13 +35,13 @@
         --upload-certs
         --pod-network-cidr="{{ kubernetes_network.pod_network_cidr }}"
         --ignore-preflight-errors="{{ kubernetes_ignore_preflight_erros }}"
-      register: kubeadmin_init_advertise
-      when:
-        - not kubernetes_init_stat.stat.exists
-    - name: Print output
+      register: kubeadm_output
+    - name: Print kubeadm init output
       debug:
-        var: kubeadmin_init_advertise
-  when: master_creation_mode == "advertise_ip"
+        var: kubeadm_output
+  when:
+    - master_creation_mode == "advertise_ip"
+    - not kubernetes_init_stat.stat.exists
 
 - name: Get kubeconfig file
   fetch:
@@ -59,7 +61,7 @@
     state: link
 
 - name: Taint master
-  command: kubectl taint nodes --all node-role.kubernetes.io/master-
+  command: "{{ kubernetes_taint_command }}"
   when: kubernetes_taint_master == true
 
 - name: Configure flannel cni plugin
@@ -70,6 +72,8 @@
   register: flannel_result
   changed_when: "'created' in flannel_result.stdout"
   when: kubernetes_network.cni == "flannel"
+  tags:
+    - kubernetes_cni
 
 - name: Configure weave cni plugin
   block:
@@ -77,15 +81,21 @@
       shell: kubectl version | base64 | tr -d '\n'
       changed_when: false
       register: kubectl_version
-
     - name: Install weave network plugin
       command: "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version={{ kubectl_version.stdout_lines[0] }}"
       register: weave_result
-      changed_when: "'created' in weave_result.stdout"
+      changed_when:
+        - "'created' in weave_result.stdout"
+        - "'configured' in weave_result.stdout"
   when: kubernetes_network.cni == "weave"
-  
-# - name: Add ingress nginx controller
-#   command: kubectl apply -f "{{ kubernetes_ingress_controller }}"
+  tags:
+    - kubernetes_cni
+
+- name: Add ingress nginx controller
+  command: kubectl apply -f "{{ kubernetes_ingress_controller }}"
+  register: nginx_ingress_result
+  changed_when:
+    - "'created' in nginx_ingress_result.stdout"
 
 - name: Check if dashboard ui service exists
   shell: kubectl get services --namespace kube-system | grep -q kubernetes-dashboard
@@ -93,16 +103,15 @@
   failed_when: false
   register: has_kubernetes_dashboard_service
   when: kubernetes_enable_dashboard | bool
-
-- name: Debug has service
-  debug:
-    var: kubernetes_dashboard_service
-
-- name: Debug if service enabled
-  debug:
-    var: kubernetes_enable_dashboard
+  tags:
+    - kubernetes_dashboard
 
 - name: Enable dashboard ui
-  command: kubectl create -f "{{ kubernetes_dashboard_manifest }}"
-  when:
-    - kubernetes_enable_dashboard | bool
+  command: kubectl apply -f "{{ kubernetes_dashboard_manifest }}"
+  when: kubernetes_enable_dashboard | bool
+  register: dashboard_result
+  changed_when:
+    - "'created' in dashboard_result.stdout"
+    - "'configured' in dashboard_result.stdout"
+  tags:
+    - kubernetes_dashboard

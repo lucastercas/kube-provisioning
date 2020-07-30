@@ -12,47 +12,53 @@
     state: absent
   loop: "{{ old_docker_packages }}"
 
-- name: Add docker gpg apt key
-  apt_key:
-    url: "{{ docker_gpg_key }}"
-    state: present
-
-- name: Add docker apt repo
-  apt_repository:
-    repo: "{{ docker_apt_repo }}"
-    state: present
-
-- name: Add kubernetes gpg apt key
-  apt_key:
-    url: "{{ kubernetes_apt_key }}"
-    state: present
-
-- name: Add kubernetes apt repo
-  apt_repository:
-    repo: "{{ kubernetes_apt_repo }}"
-    state: present
+- name: Configure apt
+  when: ansible_facts['os_family'] == "Debian"
+  block:
+    - name: Add docker gpg apt key
+      apt_key:
+        url: "{{ docker_gpg_key }}"
+        state: present
+    - name: Add docker apt repo
+      apt_repository:
+        repo: "{{ docker_apt_repo }}"
+        state: present
+    - name: Add kubernetes gpg apt key
+      apt_key:
+        url: "{{ kubernetes_apt_key }}"
+        state: present
+    - name: Add kubernetes apt repo
+      apt_repository:
+        repo: "{{ kubernetes_apt_repo }}"
+        state: present
 
 - name: Install required packages for masters
-  apt:
+  package:
     name: "{{ item }}"
     state: present
     update_cache: yes
   loop: "{{ kubernetes_packages_master }}"
   when: "'master' in kubernetes_roles"
-
+  tags:
+    - packages
+    
 - name: Install required packages for workers
-  apt:
+  package:
     name: "{{ item }}"
     state: present
     update_cache: yes
   loop: "{{ kubernetes_packages_master }}"
   when: "'worker' in kubernetes_roles"
+  tags:
+    - packages
 
 - name: Start services
   service:
     name: "{{ item }}"
     state: restarted
   loop: "{{ kubernetes_nodes_services }}"
+  tags:
+    - services
 
 - name: Remove swapfile from /etc/fstab
   mount:
@@ -62,6 +68,10 @@
   with_items:
     - swap
     - none
+  tags:
+    - swap
 
 - name: Disable swap
   command: swapoff -a
+  tags:
+    - swap

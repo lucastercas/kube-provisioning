@@ -7,10 +7,8 @@ metadata:
   name: kubernetes-dashboard
   namespace: kubernetes-dashboard
 spec:
-  type: NodePort
   ports:
     - port: 443
       targetPort: 8443
-      nodePort: 31506
   selector:
     k8s-app: kubernetes-dashboard
