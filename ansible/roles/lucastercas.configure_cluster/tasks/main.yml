@@ -1,0 +1,49 @@
+---
+- name: Setup ingress
+  block:
+    - name: Add ingress nginx controller
+      command: kubectl apply -f "{{ kubernetes_nginx_ingress_manifest }}"
+      register: nginx_ingress_result
+      changed_when:
+        - "'created' in nginx_ingress_result.stdout"
+        - "'configured' in nginx_ingress_result.stdout"
+    - name: Get ingress ports
+      command: >
+        {% raw %} kubectl get svc -n ingress-nginx -o go-template='{{range .items}}{{range .spec.ports}}{{if .nodePort }}{{.nodePort}}{{" "}}{{end}}{{end}}{{end}}' {% endraw %}
+      register: ingress_ports
+    - name: Set ingress ports on all hosts
+      set_fact:
+        ingress_http_port: '{{ ingress_ports.stdout.split(" ")[0] }}'
+        ingress_https_port: '{{ ingress_ports.stdout.split(" ")[1] }}'
+      delegate_facts: true
+      delegate_to: "{{ item }}"
+      with_items: "{{ groups.all }}"
+
+- name: Setup dashboard
+  block:
+    - name: Check if dashboard ui service exists
+      shell: kubectl get services --namespace kube-system | grep -q kubernetes-dashboard
+      changed_when: false
+      failed_when: false
+      register: has_kubernetes_dashboard_service
+      when: kubernetes_enable_dashboard | bool
+      tags:
+        - kubernetes_dashboard
+
+    - name: Enable dashboard ui
+      command: kubectl apply -f "{{ kubernetes_dashboard_manifest }}"
+      when: kubernetes_enable_dashboard | bool
+      register: dashboard_result
+      changed_when:
+        - "'created' in dashboard_result.stdout"
+        - "'configured' in dashboard_result.stdout"
+      tags:
+        - kubernetes_dashboard
+
+- name: Enable metrics server
+  command: kubectl apply -f "{{ kubernetes_metrics_server_manifest }}"
+  when: kubernetes_enable_metrics_server | bool
+  register: metrics_server_result
+  changed_when:
+    - "'created' in metrics_server_result.stdout"
+    - "'configured' in metrics_server_result.stdout"

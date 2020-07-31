@@ -3,12 +3,5 @@
 kubernetes_flannel_manifest_file_rbac: "https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml"
 kubernetes_flannel_manifest_file: "https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml"
 
-# Ingress nginx manifest
-kubernetes_ingress_controller: "https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.34.1/deploy/static/provider/baremetal/deploy.yaml"
-
-# Dashboard ui manifest
-# kubernetes_dashboard_manifest: "https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml"
-kubernetes_dashboard_manifest: "https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.3/aio/deploy/recommended.yaml"
-
 # Allow work on master nodes
 kubernetes_taint_command: "kubectl taint nodes --all node-role.kubernetes.io/master-"

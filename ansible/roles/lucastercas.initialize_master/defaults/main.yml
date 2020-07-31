@@ -4,8 +4,6 @@ master_creation_mode: "control_plane"
 
 kubernetes_ignore_preflight_erros: "all"
 
-kubernetes_enable_dashboard: true
-
 # CNI plugins settings
 kubernetes_network:
   cni: "weave"

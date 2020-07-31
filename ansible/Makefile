@@ -16,6 +16,9 @@ install_requirements:
 loadbalancers:
 	ansible-playbook -i hosts.yml playbooks/configure_loadbalancers.yml -v
 
+configure_cluster:
+	ansible-playbook -i hosts.yml playbooks/configure_cluster.yml -v
+
 # Run the configure_nodes playbook
 nodes:
 	ansible-playbook -i hosts.yml playbooks/configure_nodes.yml -v

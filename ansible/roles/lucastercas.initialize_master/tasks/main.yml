@@ -90,28 +90,3 @@
   when: kubernetes_network.cni == "weave"
   tags:
     - kubernetes_cni
-
-- name: Add ingress nginx controller
-  command: kubectl apply -f "{{ kubernetes_ingress_controller }}"
-  register: nginx_ingress_result
-  changed_when:
-    - "'created' in nginx_ingress_result.stdout"
-
-- name: Check if dashboard ui service exists
-  shell: kubectl get services --namespace kube-system | grep -q kubernetes-dashboard
-  changed_when: false
-  failed_when: false
-  register: has_kubernetes_dashboard_service
-  when: kubernetes_enable_dashboard | bool
-  tags:
-    - kubernetes_dashboard
-
-- name: Enable dashboard ui
-  command: kubectl apply -f "{{ kubernetes_dashboard_manifest }}"
-  when: kubernetes_enable_dashboard | bool
-  register: dashboard_result
-  changed_when:
-    - "'created' in dashboard_result.stdout"
-    - "'configured' in dashboard_result.stdout"
-  tags:
-    - kubernetes_dashboard

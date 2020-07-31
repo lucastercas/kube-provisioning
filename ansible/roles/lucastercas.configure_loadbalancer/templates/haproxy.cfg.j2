@@ -37,7 +37,7 @@ backend ingress_http_back
   balance roundrobin
   option tcp-check
   {% for server in groups.worker_nodes %}
-  server {{ server }} {{ hostvars[server].ansible_host }}:31748 check fall 3 rise 2
+  server {{ server }} {{ hostvars[server].ansible_host }}:{{ingress_http_port}} check fall 3 rise 2
   {% endfor %}
 
 frontend ingress_https_front
@@ -49,5 +49,5 @@ backend ingress_https_back
   balance roundrobin
   option tcp-check
   {% for server in groups.worker_nodes %}
-  server {{ server }} {{ hostvars[server].ansible_host }}:32428 check fall 3 rise 2
+  server {{ server }} {{ hostvars[server].ansible_host }}:{{ingress_https_port}} check fall 3 rise 2
   {% endfor %}

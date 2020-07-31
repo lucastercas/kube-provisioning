@@ -1,0 +1,4 @@
+- name: Create initial master node
+  hosts: control_nodes
+  roles:
+    - lucastercas.configure_cluster

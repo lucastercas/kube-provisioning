@@ -1,0 +1,9 @@
+---
+kubernetes_metrics_server_manifest: "https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.7/components.yaml"
+
+kubernetes_dashboard_manifest: "https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.3/aio/deploy/recommended.yaml"
+
+kubernetes_nginx_ingress_manifest: "https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.34.1/deploy/static/provider/baremetal/deploy.yaml"
+
+kubernetes_enable_dashboard: true
+kubernetes_enable_metrics_server: true

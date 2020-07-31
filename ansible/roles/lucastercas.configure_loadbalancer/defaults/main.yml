@@ -1,2 +1,5 @@
 ---
 loadbalancer: "haproxy"
+
+ingress_http_port: ""
+ingress_https_port: ""
